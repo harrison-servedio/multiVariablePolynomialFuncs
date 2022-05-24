@@ -4,12 +4,12 @@
 //
 
 
-public class Atom implements Comparable<Atom> {
+public class Atom implements Comparable<Atom> {//I did not know what implements or comparable mean
     private char letter;
     private int subscript = -1;
     private int power = 1;
 
-    public Atom() {
+    public Atom() {                             //Did not know the meaning of this
     }
 
     public Atom(char letter, int subscript, int power) {
@@ -18,7 +18,7 @@ public class Atom implements Comparable<Atom> {
         this.power = power;
     }
 
-    public Atom(char letter) {
+    public Atom(char letter) {                  //Assumend this just mean that the user would let the defaults abouve remain when creating the class
         this.letter = letter;
     }
 
@@ -62,11 +62,13 @@ public class Atom implements Comparable<Atom> {
         return this.getLetter() == atom.getLetter() && this.getSubscript() == atom.getSubscript();
     }
 
+    //This is the exact same thing as the like function so I don't want to make duplicates
     public boolean isLike(Atom atom) {
         return this.getLetter() == atom.getLetter() && this.getSubscript() == atom.getSubscript();
     }
 
     /** @deprecated */
+    
     @Deprecated
     public boolean lessThanOrEqual(Atom atom) {
         if (this.getLetter() < atom.getLetter()) {
@@ -85,7 +87,7 @@ public class Atom implements Comparable<Atom> {
             return this.equals(atom);
         }
     }
-
+    //same thing as the function above
     public boolean isLessThanOrEquals(Atom atom) {
         if (this.equals(atom)) {
             return true;
@@ -107,6 +109,7 @@ public class Atom implements Comparable<Atom> {
     }
 
     /** @deprecated */
+    //Why doesn't this consider the power? Possible problem
     @Deprecated
     public boolean lessThan(Atom atom) {
         if (this.getLetter() < atom.getLetter()) {
@@ -124,6 +127,7 @@ public class Atom implements Comparable<Atom> {
         }
     }
 
+    //Same thing as equal too
     /** @deprecated */
     @Deprecated
     public boolean identicalTo(Atom atom) {
@@ -146,7 +150,7 @@ public class Atom implements Comparable<Atom> {
         }
 
     }
-
+    //Done
     public boolean equals(Atom atom) {
         return this.getLetter() == atom.getLetter() && this.getSubscript() == atom.getSubscript() && this.getPower() == atom.getPower();
     }
