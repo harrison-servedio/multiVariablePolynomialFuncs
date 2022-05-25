@@ -1,7 +1,6 @@
-class poly:
-    def __init__(self, terms) -> None:
-        self.terms = terms
+import parser
+from math import sin
 
-x = poly([term, term, term, term])
-x = poly(f"{term1} {term2}")
-[2, 'a', 3]
+formula = "sin(x)*x**2"
+code = parser.expr(formula).compile()
+print([i for i in code])
