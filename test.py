@@ -1,6 +1,1 @@
-import parser
-from math import sin
-
-formula = "sin(x)*x**2"
-code = parser.expr(formula).compile()
-print([i for i in code])
+print([1, 2, 3, 4, 5, 6][1:])
