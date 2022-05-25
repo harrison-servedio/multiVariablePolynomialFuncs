@@ -17,19 +17,21 @@ class Polynomial:
         simpler = {} # {vars as derived from t (term): [sum of coefficients, [term objects]]}
         for t in self.terms:
 
-            vars_items = list(dict(sorted(t.vars.items(), key=lambda item: item[0])).items())
+            # keys of dictionaries must be hashable so a dictionary can not be a key for a dictionary
+            # this turns the vars for a term into a string so that they can be used as keys
+            vars_items = list(dict(sorted(t.vars.items(), key=lambda item: item[0])).items()) 
             vars_key = ''
             for item in vars_items:
                 vars_key += item[0] + str(item[1])
             
             
-            if vars_key in simpler.keys():
+            if vars_key in simpler.keys(): # tally coefficients in dictionary simpler
                 simpler[vars_key][0] += t.coefficient
                 simpler[vars_key][1].append(t)
             else:
-                simpler[vars_key] = [t.coefficient, [t]]
+                simpler[vars_key] = [t.coefficient, [t]] # create dictionary entry of vars if vars is not in dicitonary
 
-        for simple_term in simpler.values():
+        for simple_term in simpler.values(): # reasign the compounded term values and delete excess terms
             if len(simple_term[1]) == 1:
                 pass
             else:
