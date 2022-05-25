@@ -30,6 +30,10 @@ def add(p1, p2):
 
 def mult(p1, p2):
     terms = []
+    if not isinstance(p2, Polynomial):
+        p2 = Polynomial([[p2,{}]])
+    if not isinstance(p1, Polynomial):
+        p2 = Polynomial([[p1,{}]])
     for n in p1.terms:
         for m in p2.terms:
             coef = n.coefficient * m.coefficient
@@ -77,5 +81,5 @@ class Polynomial:
 
 poly = Polynomial([[8, {'x': 2}], [4, {'x': 1}], [-5, {}]])
 poly2 = Polynomial([[3, {'x': 2, 'y': 3}], [4, {'x': 1}], [-5, {}]])
-multip = mult(poly2, poly)
+multip = mult(poly2, 6)
 multip.print()
