@@ -7,25 +7,26 @@ This package attempts to provide polynomial handling and functions. Functions ar
 
 Current Capabilities:
     Creating polynomial object
-    Creating term object (polynomial object is multiple terms.)
-    Simplifying a list of terms (and therefore a polynomial)
-    Adding polynomials
-    Subtracting polynomials
+    Creating term object (polynomial object is multiple terms)
+    Simplifying a polynomial
+        Adding polynomials
+        Subtracting polynomials
     Multiplying polynomials
     Dividing Polynomials
 
-The polynomial data structure is comprised of a list of lists and dicktionaries, as follows:
+The polynomial data structure is comprised of a list of lists and dictionaries, as follows:
     [ [8, {'x': 2}], [4, {'x': 1}], [-5, {}] ]
     And equates to: 8x^2 + 4x - 5
-The dictionary contains the variable(s) as a string as the key, and the power to which the variable is raised 
-as the value. Note that one sublist is a term. Also note that many variables can be represented. For example:
+
+The dictionary contains the variable(s) as the key, and the power to which the variable is raised 
+as the value. Note that fractinal and negative exponents retain functionality. Note that one sublist is a term. 
+Also note that many variables can be represented. For example:
     the term: 27x^3y
     can be represented by the term: [27, {'x':3, 'y': 1}]
 
 Issues:
     * When the vars of a term are changed it's degree is not updated
     Need to add:
-    variable interpolation for division
     Handling mult with one term
 
 '''
@@ -33,38 +34,17 @@ Issues:
 from copy import deepcopy
 from term import term
 
-def simplify(terms):
-    
-    simpler = {} # {vars as derived from t (term): [sum of coefs, [term objects]]}
-    for t in terms:
-        # keys of dictionaries must be hashable so a dictionary can not be a key for a dictionary
-        # this turns the vars for a term into a string so that they can be used as keys
-        vars_items = list(dict(sorted(t.vars.items(), key=lambda item: item[0])).items()) 
-        vars_key = ''
-        for item in vars_items:
-            vars_key += item[0] + str(item[1])
-
-        if vars_key in simpler.keys(): # tally coefs in dictionary simpler
-            simpler[vars_key][0] += t.coef
-            simpler[vars_key][1].append(t)
-        else:
-            simpler[vars_key] = [t.coef, [t]] # create dictionary entry of vars if vars is not in dicitonary
-
-    for simple_term in simpler.values(): # reasign the compounded term values and delete excess terms
-        if len(simple_term[1]) != 1:
-            simple_term[1][0].coef = simple_term[0]
-            for t in simple_term[1][1:]:
-                terms.remove(t)
-            
-    return terms
-
 class Polynomial:
     def __init__(self, terms_input):
         # term object is composed of operator, coef, vars, degree
-        self.terms = [term(t) for t in terms_input] if type(terms_input[0]) == list else terms_input
-        self.sort()
+        if terms_input:
+            self.terms = [term(t) for t in terms_input] if type(terms_input[0]) == list else terms_input
+            self.sort()
+            self.degree = self.terms[0].degree
+        else:
+            self.terms = []
+            self.degree = 0
         
-        self.degree = self.terms[0].degree
 
     def simplify(self):
 
@@ -94,15 +74,36 @@ class Polynomial:
             return ' '.join(outpolys) # if return_ arg is true, returned instead of printed
 
         print(' '.join(outpolys)) 
-
+    
+    def plugin(self, vars):
+        return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
+    
     def sort(self): # might want to tweak this/degree of terms
         self.terms = sorted(self.terms, key=lambda self: self.degree, reverse=True)
 
-"""poly = Polynomial([[8, {'x': 2}], [4, {'x': 1}], [-5, {}]])
-poly2 = Polynomial([[3, {'x': 2, 'y': 3}], [4, {'x': 1}], [-5, {}]])
-multip = mult(poly2, poly)
-multip.print()
-#divid/divis"""
+def simplify(terms):
+    simpler = {} # {vars as derived from t (term): [sum of coefs, [term objects]]}
+    for t in terms:
+        # keys of dictionaries must be hashable so a dictionary can not be a key for a dictionary
+        # this turns the vars for a term into a string so that they can be used as keys
+        vars_items = list(dict(sorted(t.vars.items(), key=lambda item: item[0])).items()) 
+        vars_key = ''
+        for item in vars_items:
+            vars_key += item[0] + str(item[1])
+
+        if vars_key in simpler.keys(): # tally coefs in dictionary simpler
+            simpler[vars_key][0] += t.coef
+            simpler[vars_key][1].append(t)
+        else:
+            simpler[vars_key] = [t.coef, [t]] # create dictionary entry of vars if vars is not in dicitonary
+
+    for simple_term in simpler.values(): # reasign the compounded term values and delete excess terms
+        if len(simple_term[1]) != 1:
+            simple_term[1][0].coef = simple_term[0]
+            for t in simple_term[1][1:]:
+                terms.remove(t)
+            
+    return terms
 
 def add(p1, p2):
     return Polynomial(simplify(p1.terms + p2.terms))
@@ -132,9 +133,6 @@ def mult(p1, p2):
     
     return Polynomial(simplify(terms))
 
-
-
-
 def single_div(dividend1, divisor): #This is their leading terms
     dividend = deepcopy(dividend1)
     # Divide coefs 
@@ -148,9 +146,6 @@ def single_div(dividend1, divisor): #This is their leading terms
     
     return term([coef, dividend.vars])
 
-# a = term([10, {'x': }])
-# b = term([1, {'x': 2}])
-# Polynomial([single_div(a,b)]).print()
 def div(dividend1, divisor1, printed=False):
     dividend = dividend1.terms
     divisor = divisor1.terms
@@ -186,16 +181,41 @@ def div(dividend1, divisor1, printed=False):
             answer = answer[0].print(True)
     
     return answer
-"""
-Remainder division test case:   
-a = Polynomial([[2, {'x':3}], [4, {'x': 2}], [5, {'x': 1}], [-1, {}]])
 
-b = Polynomial([[1, {'x': 2}], [-3, {'x': 1}]])
+def expo(poly, power):
+    
+    for i in range(power-1):
+        poly = mult(poly, poly)
+    
+    return poly
 
-print(div(a, b, True))"""
+def compose(*polyss): # args will be of Polynomial class
+    polys = [t.terms for t in list(reversed(polyss))] + [[]]
+    
+    for index, poly1 in enumerate(polys[:-1]):
+        Polynomial(simplify(polys[-1])).print()
+        poly = Polynomial(poly1)
+        for iterm, term in enumerate(polys[index]):
 
-a = Polynomial([[1, {'x':4}], [-1, {'x': 3}], [-5, {'x': 2}], [-3, {'x': 1}]])
+            # raise poly to the power of term
+            try:
+                powered = expo(poly, term.vars[list(term.vars.keys())[0]])
+            except IndexError:
+                powered = expo(poly, 0)
+            # mult result by coef of term
+            product = mult(powered, term.coef)
+            # add term active polynomial
+            try:
+                del polys[index + 1][iterm] 
+            except:
+                pass
+            polys[index + 1] += product.terms
+        
+    return Polynomial(simplify(polys[-1]))
 
-b = Polynomial([[1, {'x': 2}], [-3, {'x': 1}]])
+a = Polynomial([[5, {'x':2}], [1,{}]])
 
-print(div(a, b, True))
+b = Polynomial([[1, {'x': 2}], [1, {'x':1}], [-1, {'x':0}]])
+
+composed = compose(a, b)
+composed.print()
