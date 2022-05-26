@@ -5,6 +5,7 @@ Issues:
 * When the vars of a term are changed it's degree is not updated
 Need to add:
 variable interpolation for division
+Handling mult with one term
 """
 def simplify(terms):
     simpler = {} # {vars as derived from t (term): [sum of coefs, [term objects]]}
@@ -73,7 +74,10 @@ class Polynomial:
         self.sort()
         outpolys = []
         for t in self.terms: # prettifying terms
-            polystr = f'{t.operator} {abs(t.coef) if abs(t.coef) != 1 else ""}'
+            if t.degree:
+                polystr = f'{t.operator} {abs(t.coef) if abs(t.coef) != 1 and len(t.vars) else ""}'
+            else:
+                polystr = f'{t.operator} {abs(t.coef)}'
             for k, v in t.vars.items():
                 if v not in [1, 0]: 
                     polystr += f"{k}^{v}"
