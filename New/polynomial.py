@@ -3,6 +3,8 @@ from term import term
 """
 Issues:
 * When the vars of a term are changed it's degree is not updated
+Need to add:
+variable interpolation for division
 """
 def simplify(terms):
     simpler = {} # {vars as derived from t (term): [sum of coefs, [term objects]]}
@@ -71,7 +73,7 @@ class Polynomial:
         self.sort()
         outpolys = []
         for t in self.terms: # prettifying terms
-            polystr = f'{t.operator} {abs(t.coef) if t.coef != 1 else ""}'
+            polystr = f'{t.operator} {abs(t.coef) if abs(t.coef) != 1 else ""}'
             for k, v in t.vars.items():
                 if v not in [1, 0]: 
                     polystr += f"{k}^{v}"
@@ -121,12 +123,13 @@ def div(dividend1, divisor1, printed=False):
     break_ = False      
     while 1:
         dividend = [term for term in dividend if term.coef != 0]
+        if dividend == []: # If the dividend is emptied the division is completed
+            break
         # divide the leading term of the active dividend by the leading term of the divisor
         leading_div = single_div(dividend[0], divisor[0])
         # if we divide the leading term of the coefficient and the leading term of the divisor, if there is a negetive exponenet then the dividend is the remainder
         for power in list(leading_div.vars.values()):
             if not power + 1: # Handle zeros
-                remainder = dividend
                 break_ = True
         if break_:
             break
@@ -137,13 +140,26 @@ def div(dividend1, divisor1, printed=False):
         # subtract the dividend by the result
         dividend = sub(Polynomial(dividend), result).terms
     
-    answer = [Polynomial(answer), [Polynomial(remainder), divisor1]]
-    if printed: # If print argument is specified to be true than a formated answer is returned
-        answer = f"{answer[0].print(True)} + ({answer[1][0].print(True)})/({answer[1][1].print(True)})"
-    return answer
+    if dividend:
+        answer = [Polynomial(answer), [Polynomial(dividend), divisor1]]
+        if printed: # If print argument is specified to be true than a formated answer is returned
+            answer = f"{answer[0].print(True)} + ({answer[1][0].print(True)})/({answer[1][1].print(True)})"
 
-        
+    else:
+        answer = [Polynomial(answer), []]
+        if printed:
+            answer = answer[0].print(True)
+    
+    return answer
+"""
+Remainder division test case:   
 a = Polynomial([[2, {'x':3}], [4, {'x': 2}], [5, {'x': 1}], [-1, {}]])
+
+b = Polynomial([[1, {'x': 2}], [-3, {'x': 1}]])
+
+print(div(a, b, True))"""
+
+a = Polynomial([[1, {'x':4}], [-1, {'x': 3}], [-5, {'x': 2}], [-3, {'x': 1}]])
 
 b = Polynomial([[1, {'x': 2}], [-3, {'x': 1}]])
 
