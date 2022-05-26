@@ -1,13 +1,40 @@
+'''
+Harrison, Abraham, Imran
+
+Polynomial with Python
+
+This package attempts to provide polynomial handling and functions. Functions are as follows:
+
+Current Capabilities:
+    Creating polynomial object
+    Creating term object (polynomial object is multiple terms.)
+    Simplifying a list of terms (and therefore a polynomial)
+    Adding polynomials
+    Subtracting polynomials
+    Multiplying polynomials
+    Dividing Polynomials
+
+The polynomial data structure is comprised of a list of lists and dicktionaries, as follows:
+    [ [8, {'x': 2}], [4, {'x': 1}], [-5, {}] ]
+    And equates to: 8x^2 + 4x - 5
+The dictionary contains the variable(s) as a string as the key, and the power to which the variable is raised 
+as the value. Note that one sublist is a term. Also note that many variables can be represented. For example:
+    the term: 27x^3y
+    can be represented by the term: [27, {'x':3, 'y': 1}]
+
+Issues:
+    * When the vars of a term are changed it's degree is not updated
+    Need to add:
+    variable interpolation for division
+    Handling mult with one term
+
+'''
+
 from copy import deepcopy
 from term import term
-"""
-Issues:
-* When the vars of a term are changed it's degree is not updated
-Need to add:
-variable interpolation for division
-Handling mult with one term
-"""
+
 def simplify(terms):
+    
     simpler = {} # {vars as derived from t (term): [sum of coefs, [term objects]]}
     for t in terms:
         # keys of dictionaries must be hashable so a dictionary can not be a key for a dictionary
@@ -31,35 +58,6 @@ def simplify(terms):
             
     return terms
 
-def add(p1, p2):
-    return Polynomial(simplify(p1.terms + p2.terms))
-
-def sub(p1, p2):
-    negative = mult(p2, -1)
-    equation = p1.terms + negative.terms
-    return Polynomial(simplify(equation))
-
-def mult(p1, p2):
-    terms = []
-    if not isinstance(p2, Polynomial):
-        p2 = Polynomial([[p2,{}]])
-    if not isinstance(p1, Polynomial):
-        p1 = Polynomial([[p1,{}]])
-    for n in p1.terms:
-        for m in p2.terms:
-            coef = n.coef * m.coef
-            # merging vars dictionaries => a^(b+c) = a^b * a^c
-            v = dict(n.vars) # reclassed because otherwise refrence is changed
-            for key, value in m.vars.items():
-                if key in v.keys():
-                    v[key] += value
-                else:
-                    v[key] = value
-            terms.append(term([coef, v])) 
-    
-    return Polynomial(simplify(terms))
-
-
 class Polynomial:
     def __init__(self, terms_input):
         # term object is composed of operator, coef, vars, degree
@@ -69,7 +67,9 @@ class Polynomial:
         self.degree = self.terms[0].degree
 
     def simplify(self):
+
         self.terms = simplify(self.terms)
+
     def print(self, return_=False):
         self.sort()
         outpolys = []
@@ -103,6 +103,37 @@ poly2 = Polynomial([[3, {'x': 2, 'y': 3}], [4, {'x': 1}], [-5, {}]])
 multip = mult(poly2, poly)
 multip.print()
 #divid/divis"""
+
+def add(p1, p2):
+    return Polynomial(simplify(p1.terms + p2.terms))
+
+def sub(p1, p2):
+    negative = mult(p2, -1)
+    equation = p1.terms + negative.terms
+    return Polynomial(simplify(equation))
+
+def mult(p1, p2):
+    terms = []
+    if not isinstance(p2, Polynomial):
+        p2 = Polynomial([[p2,{}]])
+    if not isinstance(p1, Polynomial):
+        p1 = Polynomial([[p1,{}]])
+    for n in p1.terms:
+        for m in p2.terms:
+            coef = n.coef * m.coef
+            # merging vars dictionaries => a^(b+c) = a^b * a^c
+            v = dict(n.vars) # reclassed because otherwise refrence is changed
+            for key, value in m.vars.items():
+                if key in v.keys():
+                    v[key] += value
+                else:
+                    v[key] = value
+            terms.append(term([coef, v])) 
+    
+    return Polynomial(simplify(terms))
+
+
+
 
 def single_div(dividend1, divisor): #This is their leading terms
     dividend = deepcopy(dividend1)
