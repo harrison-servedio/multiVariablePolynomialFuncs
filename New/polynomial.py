@@ -190,32 +190,26 @@ def expo(poly, power):
     return poly
 
 def compose(*polyss): # args will be of Polynomial class
-    polys = [t.terms for t in list(reversed(polyss))] + [[]]
-    
-    for index, poly1 in enumerate(polys[:-1]):
-        Polynomial(simplify(polys[-1])).print()
-        poly = Polynomial(poly1)
-        for iterm, term in enumerate(polys[index]):
+    polys = [t.terms for t in list(reversed(polyss))]
 
-            # raise poly to the power of term
-            try:
-                powered = expo(poly, term.vars[list(term.vars.keys())[0]])
-            except IndexError:
-                powered = expo(poly, 0)
-            # mult result by coef of term
-            product = mult(powered, term.coef)
-            # add term active polynomial
-            try:
-                del polys[index + 1][iterm] 
-            except:
-                pass
-            polys[index + 1] += product.terms
-        
-    return Polynomial(simplify(polys[-1]))
+    active = polys.pop(0) # Active is what will be plugged into the next term
+    
+    for func in polys:
+        result = []
+        for t in func:
+            if t.vars:
+                result += mult(t.coef, expo(Polynomial(active), list(t.vars.values())[0])).terms
+            else:
+                result.append(t)
+
+        active = result
+
+    return Polynomial(simplify(active))
+    
 
 a = Polynomial([[5, {'x':2}], [1,{}]])
 
-b = Polynomial([[1, {'x': 2}], [1, {'x':1}], [-1, {'x':0}]])
+b = Polynomial([[1, {'x': 2}], [1, {'x':1}], [-1, {}]])
 
-composed = compose(a, b)
+composed = compose(a, b, a)
 composed.print()
