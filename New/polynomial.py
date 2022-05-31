@@ -96,7 +96,7 @@ class Polynomial: # the poynomial class
 
         print(' '.join(outpolys)) # otherwise, print the string representation of the polynomial
     
-    def list_unique_variables(self):
+    def list_vars(self):
         # we will attempt to list out all unique variables used in the polynomial
         unique_variables = [] # a list of all unique variables in the polynomial object
         for term in self.terms: # we shal look through all of the terms in the polynomial
@@ -116,7 +116,7 @@ class Polynomial: # the poynomial class
         '''
         for term in self.terms: # we parse through each term of the polynomial
             if len(term.vars) == 0: # if the variable dictionary is empty
-                for variable in self.list_unique_variables(): # then well go through all possible variables
+                for variable in self.list_vars(): # then well go through all possible variables
                     term.vars[variable] = 0 # and set the power to 0
 
     def plugin(self, vars): 
@@ -242,7 +242,7 @@ def expo(poly, power):
 
     if power == 0: # we want to return 1
         # however, rather than just returning 1 with an empty var list, I will return it with the variables of the original polynomial
-        uniques = poly.list_unique_variables() # generate all of the vairables from arg poly
+        uniques = poly.list_vars() # generate all of the vairables from arg poly
         p = Polynomial([[1, {}]]) # polynomial with 1 and empty vars
         for var in uniques: # going through
             p.terms[0].vars[var] = 0 # setting unique vars to power 0 
@@ -282,7 +282,7 @@ def riemann(poly, lbound, ubound, steps = 100000):
     also this is only for single variable, 2d functions because i said so  
     '''
 
-    if len(poly.list_unique_variables()) == 1: # ONLY SINGLE VARIABLE REIMANN SUM
+    if len(poly.list_vars()) == 1: # ONLY SINGLE VARIABLE REIMANN SUM
 
         sum = 0 # cumulative sum of trapezoids set at 0
 
@@ -307,15 +307,15 @@ def derive(polynomial):
     the constraint here is that it will only work for single variabled functions
     expected input is a Polynomial `
     '''
-    if len(polynomial.list_unique_variables()) == 1:
+    if len(polynomial.list_vars()) == 1:
     
         for term in polynomial.terms:
             if term.degree != 0:
                 term.coef = term.coef * term.degree
-                (term.vars)[polynomial.list_unique_variables()[0]] -= 1 
+                (term.vars)[polynomial.list_vars()[0]] -= 1 
             elif term.degree == 0:
                 term.coef = 0
-                term.vars = {polynomial.list_unique_variables()[0]: 0}
+                term.vars = {polynomial.list_vars()[0]: 0}
 
         polynomial.simplify()
     else:
@@ -326,8 +326,10 @@ def aderive(polynomial):
     here we will take the antiderivate of the input polynomial
     As with the derive function, this is also pretty simple, becaue it is just a polynomial
     Also, this will only work with one variable Polynomials
-    
+    Expected input is a polynomial object
     '''
+
+    if len(polynomial.lis)
 
 
 
