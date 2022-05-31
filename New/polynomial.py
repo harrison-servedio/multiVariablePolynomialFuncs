@@ -54,6 +54,7 @@ class Polynomial: # the poynomial class
         if terms_input: # if there is an input
             self.terms = [term(t) for t in terms_input] if type(terms_input[0]) == list else terms_input
             self.sort()
+            self.elim_empty_vars( )
             self.degree = self.terms[0].degree
         else: # if false
             self.terms = [term([0,{}])] # value of the polynomial is set to 0
@@ -301,11 +302,18 @@ def riemann(poly, lbound, ubound, steps = 100000):
         
         return sum
 
-def derive(poly):
+def derive(polynomial):
     '''
-    docs here
+    we will take the derivate of the polynomial.
+    because this is for polynomials, the algorithm is actually rather simple. 
+    the constraint here is that it will only work for single variabled functions
+    expected input is a Polynomial `
     '''
-    pass
+    if len(polynomial.list_unique_variables()) == 1:
+    
+        for term in polynomial.terms:
+            if term
+    
 
 
 # a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
