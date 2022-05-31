@@ -63,21 +63,22 @@ class Polynomial: # the poynomial class
         self.terms = simplify(self.terms) # once, again, defined later. 
 
     def print(self, return_=False): 
-        
-        '''
-        printing the polynomial nicely
-        for example, will display:
-        [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {'x':0}]]
 
-        ''' 
-        self.sort()
-        outpolys = []
-        for t in self.terms: # prettifying terms
-            if t.degree:
-                polystr = f'{t.operator} {abs(t.coef) if abs(t.coef) != 1 and len(t.vars) else ""}'
+        '''
+        printing the polynomial nicely. for example, will display:
+            [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {'x':0}]]
+        in a more readable fashion as:
+            5x^3 + 3x^2 - 4x + 12
+        '''
+
+        self.sort() # we will sort the polynomial. this method is defined later in the class
+        outpolys = [] # a blank list for our inevitable output
+        for t in self.terms: # we will now go through and make each term into a readble string
+            if t.degree: 
+                polystr = f'{t.operator} {abs(t.coef) if abs(t.coef) != 1 and len(t.vars) else ""}' # displauuing the coefficient
             else:
-                polystr = f'{t.operator} {abs(t.coef)}'
-            for k, v in t.vars.items():
+                polystr = f'{t.operator} {abs(t.coef)}' # displaying coefficient
+            for k, v in t.vars.items(): # displauing variables
                 if v not in [1, 0]: 
                     polystr += f"{k}^{v}"
                 elif v == 0:
@@ -92,7 +93,7 @@ class Polynomial: # the poynomial class
         if return_:
             return ' '.join(outpolys) # if return_ arg is true, returned instead of printed
 
-        print(' '.join(outpolys)) 
+        print(' '.join(outpolys)) # otherwise, print the string representation of the polynomial
     
     def plugin(self, vars):
         return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
