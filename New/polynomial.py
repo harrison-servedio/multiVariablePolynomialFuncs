@@ -119,17 +119,20 @@ class Polynomial: # the poynomial class
                 for variable in self.list_unique_variables(): # then well go through all possible variables
                     term.vars[variable] = 0 # and set the power to 0
 
-    def empty_vars(self):
+    def plugin(self, vars): 
         '''
-        just how certain issues arise when we represent polynomials with the an empty var, 
-        there are also issues that arise when we represent polynomials with 
-            
+        it is important to plug in values into a polynomial
+        expected input is a dict containing variable(s) and the value we want to be inputed
+        for example, input for f(x) would be {'x':value} and input for f(x,y) woudl be {'x':value, 'y':value}
+        '''
+        self.elim_empty_vars() # we first make sure that there are no empty variables. see documentation for this specific funciton to udnerstadn why this step is important
+        return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms]) # then we go through each term and each variable in the term, and simply perform arithmetic with the desired value
+    
+    def raise_to(self, exponent):
+        ''' 
+        this
         '''
 
-    def plugin(self, vars):
-        self.elim_empty_vars()
-        return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
-    
     def sort(self): 
         # NOTE : might want to tweak this/degree of terms
         # otherwise, this simply sorts all of the terms by highest degree to lowest degree
@@ -267,10 +270,11 @@ def compose(*polyss): # args will be of Polynomial class
         
     return Polynomial(simplify(polys[-1]))
 
-a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
-b = Polynomial([[1, {'x':1}]])
 
-composed = compose(b,a)
-composed.print()
+# a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
+# b = Polynomial([[1, {'x':1}]])
+
+# composed = compose(b,a)
+# composed.print()
 
 
