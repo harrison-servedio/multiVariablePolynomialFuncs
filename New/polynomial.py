@@ -301,10 +301,12 @@ def riemann(poly, lbound, ubound, steps = 100000):
         
         return sum
 
-
-
-def antiderive(poly):
+def derive(poly):
+    '''
+    docs here
+    '''
     pass
+
 
 # a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
 # b = Polynomial([[1, {'x':1}]])
