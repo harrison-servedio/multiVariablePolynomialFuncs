@@ -200,6 +200,7 @@ def raise_to(polynomial, power):
         return p # will end up returning something like [[1, {'x':0, 'y':0}]]
     
     for i in range(power-1):
+        pass
         
         
 
@@ -280,10 +281,10 @@ def compose(*polyss): # args will be of Polynomial class
     
 
 
-# a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
-# b = Polynomial([[1, {'x':1}]])
+a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {}]])
+b = Polynomial([[1, {'x':0}]])
 
-# composed = compose(b,a)
-# composed.print()
+composed = compose(a,b)
+composed.print()
 
 
