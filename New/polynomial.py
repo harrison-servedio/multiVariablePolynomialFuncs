@@ -57,7 +57,10 @@ class Polynomial: # the poynomial class
         else: # if false
             self.terms = [term([0,{}])] # value of the polynomial is set to 0
             self.degree = 0 # the degree is set to 0  as well
-        
+    
+    # Prints the polynomial when the class is requested as a string
+    def __str__(self) -> str:
+        return self.print(return_=True)
 
     def simplify(self): # we can simplify the terms using the simplify function that is defined later
 
@@ -329,8 +332,8 @@ def aderive(polynomial):
     Expected input is a polynomial object
     '''
 
-    if len(polynomial.lis)
-
+    # if len(polynomial.lis)
+    pass
 
 
 
