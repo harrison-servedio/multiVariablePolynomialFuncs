@@ -202,6 +202,7 @@ def raise_to(polynomial, power):
     for i in range(power-1):
         pass
         
+        
 
 
 
@@ -284,6 +285,10 @@ a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
 b = Polynomial([[1, {'x':1}]])
 
 composed = compose(b,a)
+a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {}]])
+b = Polynomial([[1, {'x':0}]])
+
+composed = compose(a,b)
 composed.print()
 
 
