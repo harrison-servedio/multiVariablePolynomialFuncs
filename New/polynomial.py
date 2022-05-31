@@ -121,7 +121,8 @@ class Polynomial: # the poynomial class
 
     def empty_vars(self):
         '''
-        just how certain issues arise when we represent polynomials as:
+        just how certain issues arise when we represent polynomials with the an empty var, 
+        there are also issues that arise when we represent polynomials with 
             
         '''
 
@@ -266,5 +267,10 @@ def compose(*polyss): # args will be of Polynomial class
         
     return Polynomial(simplify(polys[-1]))
 
+a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
+b = Polynomial([[1, {'x':1}]])
+
+composed = compose(b,a)
+composed.print()
 
 
