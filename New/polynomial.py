@@ -271,7 +271,40 @@ def compose(*polyss): # args will be of Polynomial class
 
     return Polynomial(simplify(active))
     
+def riemann(poly, lbound, ubound, steps = 100000):
+    
+    '''
+    this function will attempt to obtain a riemann sum to approximate the are under a curve
+    the curve will be the polynomial passed as an argument. the left bound of the riemann sum will be passed via lbound
+    and the upper bound of the riemann sum will be passed via the ubound argument
+    the number of steps that the riemann sum will undergo will be given in the 'steps' argument, which defaults to 1 billion steps
 
+    this riemann sum function will use trapezoidal approximation, and not right or left rectangles because i dont want to  
+    also this is only for single variable, 2d functions because i said so  
+    '''
+
+    if len(poly.list_unique_variables()) == 1: # ONLY SINGLE VARIABLE REIMANN SUM
+
+        sum = 0 # cumulative sum of trapezoids set at 0
+
+        var = list(poly.terms[0].vars.keys())[0]
+        increment = (ubound-lbound)/steps
+
+        current_step = lbound
+        while current_step < ubound: # originally i made a for loop then changed to while bc increment cant be below 1
+            l_sln = poly.plugin({var: current_step})
+            u_sln = poly.plugin({var: current_step+increment})
+
+            a = increment * (l_sln + u_sln)/2
+            sum += a
+            current_step += increment
+        
+        return sum
+
+
+
+def antiderive(poly):
+    pass
 
 # a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
 # b = Polynomial([[1, {'x':1}]])
@@ -279,10 +312,10 @@ def compose(*polyss): # args will be of Polynomial class
 # composed = compose(b,a)
 # composed.print()
 
-a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {'x':0}]])
-b = Polynomial([[1, {'x':0}]])
+# a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {'x':0}]])
+# b = Polynomial([[1, {'x':0}]])
 
-composed = compose(a,b)
-composed.print()
+# composed = compose(a,b)
+# composed.print()
 
 
