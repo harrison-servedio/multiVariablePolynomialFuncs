@@ -32,8 +32,6 @@ Issues:
 '''
 
 from copy import deepcopy
-from email.quoprimime import unquote
-from enum import unique 
 from term import term
 
 class Polynomial: # the poynomial class
@@ -54,7 +52,7 @@ class Polynomial: # the poynomial class
         if terms_input: # if there is an input
             self.terms = [term(t) for t in terms_input] if type(terms_input[0]) == list else terms_input
             self.sort()
-            self.elim_empty_vars( )
+            self.elim_empty_vars()
             self.degree = self.terms[0].degree
         else: # if false
             self.terms = [term([0,{}])] # value of the polynomial is set to 0
@@ -312,8 +310,26 @@ def derive(polynomial):
     if len(polynomial.list_unique_variables()) == 1:
     
         for term in polynomial.terms:
-            if term
+            if term.degree != 0:
+                term.coef = term.coef * term.degree
+                (term.vars)[polynomial.list_unique_variables()[0]] -= 1 
+            elif term.degree == 0:
+                term.coef = 0
+                term.vars = {polynomial.list_unique_variables()[0]: 0}
+
+        polynomial.simplify()
+    else:
+        raise ValueError('Expected polynomial with one variable')
+
+def aderive(polynomial):
+    '''
+    here we will take the antiderivate of the input polynomial
+    As with the derive function, this is also pretty simple, becaue it is just a polynomial
+    Also, this will only work with one variable Polynomials
     
+    '''
+
+
 
 
 # a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
@@ -322,7 +338,9 @@ def derive(polynomial):
 # composed = compose(b,a)
 # composed.print()
 
-# a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {'x':0}]])
+a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {'x':0}]])
+derive(a)
+a.print()
 # b = Polynomial([[1, {'x':0}]])
 
 # composed = compose(a,b)
