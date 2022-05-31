@@ -31,7 +31,8 @@ Issues:
 
 '''
 
-from copy import deepcopy 
+from copy import deepcopy
+from enum import unique 
 from term import term
 
 class Polynomial: # the poynomial class
@@ -97,7 +98,13 @@ class Polynomial: # the poynomial class
     
     def list_unique_variables(self):
         # we will attempt to list out all unique variables used in the polynomial
-        pass
+        unique_variables = [] # a list of all unique variables in the polynomial object
+        for term in self.terms(): # we shal look through all of the terms in the polynomial
+            for variable in list(term.vars.keys()): # we look through potentially mult
+                if variable not in unique_variables:
+                    unique_variables.append(variable)
+        
+        return unique_variables # w return the list of all unique variables
 
     def plugin(self, vars):
         return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
