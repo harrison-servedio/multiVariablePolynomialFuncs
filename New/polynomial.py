@@ -58,11 +58,18 @@ class Polynomial: # the poynomial class
             self.degree = 0 # the degree is set to 0  as well
         
 
-    def simplify(self):
+    def simplify(self): # we can simplify the terms using the simplify function that is defined later
 
-        self.terms = simplify(self.terms)
+        self.terms = simplify(self.terms) # once, again, defined later. 
 
-    def print(self, return_=False):
+    def print(self, return_=False): 
+        
+        '''
+        printing the polynomial nicely
+        for example, will display:
+        [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {'x':0}]]
+
+        ''' 
         self.sort()
         outpolys = []
         for t in self.terms: # prettifying terms
