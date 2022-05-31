@@ -98,7 +98,9 @@ class Polynomial: # the poynomial class
     def plugin(self, vars):
         return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
     
-    def sort(self): # might want to tweak this/degree of terms
+    def sort(self): 
+        # NOTE : might want to tweak this/degree of terms
+        # otherwise, this simply sorts all of the terms by highest degree to lowest degree
         self.terms = sorted(self.terms, key=lambda self: self.degree, reverse=True)
 
 def simplify(terms):
@@ -233,9 +235,9 @@ def compose(*polyss): # args will be of Polynomial class
         
     return Polynomial(simplify(polys[-1]))
 
-a = Polynomial([[5, {'x':2}], [1,{}]])
+# a = Polynomial([[5, {'x':2}], [1,{}]])
 
-b = Polynomial([[1, {'x': 2}], [1, {'x':1}], [-1, {'x':0}]])
+# b = Polynomial([[1, {'x': 2}], [1, {'x':1}], [-1, {'x':0}]])
 
-composed = compose(a, b)
-composed.print()
+# composed = compose(a, b)
+# composed.print()
