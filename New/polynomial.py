@@ -186,23 +186,7 @@ def mult(p1, p2):
     
     return Polynomial(simplify(terms))
 
-def raise_to(polynomial, power):
-    '''
-    this function will raise a polynomial to a given power
-    '''
-
-    if power == 0: # we want to return 1
-        # however, rather than just returning 1 with an empty var list, I will return it with the variables of the original polynomial
-        uniques = polynomial.list_unique_variables() # generate all of the vairables from arg poly
-        p = Polynomial([[1, {}]]) # polynomial with 1 and empty vars
-        for var in uniques: # going through
-            p.terms[0].vars[var] = 0 # setting unique vars to power 0 
-        return p # will end up returning something like [[1, {'x':0, 'y':0}]]
-    
-    for i in range(power-1):
-        pass
-        
-        
+     
 
 
 
@@ -257,7 +241,19 @@ def div(dividend1, divisor1, printed=False):
 
 def expo(poly, power):
     
-    for i in range(power-1):
+    '''
+    this function will raise a polynomial to a given power
+    '''
+
+    if power == 0: # we want to return 1
+        # however, rather than just returning 1 with an empty var list, I will return it with the variables of the original polynomial
+        uniques = poly.list_unique_variables() # generate all of the vairables from arg poly
+        p = Polynomial([[1, {}]]) # polynomial with 1 and empty vars
+        for var in uniques: # going through
+            p.terms[0].vars[var] = 0 # setting unique vars to power 0 
+        return p # will end up returning something like [[1, {'x':0, 'y':0}]]
+
+    for i in range(power-1): # 
         poly = mult(poly, poly)
     
     return poly
@@ -281,11 +277,13 @@ def compose(*polyss): # args will be of Polynomial class
     
 
 
-a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
-b = Polynomial([[1, {'x':1}]])
+# a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
+# b = Polynomial([[1, {'x':1}]])
 
-composed = compose(b,a)
-a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {}]])
+# composed = compose(b,a)
+# composed.print()
+
+a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {'x':0}]])
 b = Polynomial([[1, {'x':0}]])
 
 composed = compose(a,b)
