@@ -99,14 +99,34 @@ class Polynomial: # the poynomial class
     def list_unique_variables(self):
         # we will attempt to list out all unique variables used in the polynomial
         unique_variables = [] # a list of all unique variables in the polynomial object
-        for term in self.terms(): # we shal look through all of the terms in the polynomial
-            for variable in list(term.vars.keys()): # we look through potentially mult
-                if variable not in unique_variables:
-                    unique_variables.append(variable)
+        for term in self.terms: # we shal look through all of the terms in the polynomial
+            for variable in list(term.vars.keys()): # we look through potentially multiple variables
+                if variable not in unique_variables: # if the variable has not been seen before
+                    unique_variables.append(variable) # we add it to a list of all of unique variables
         
         return unique_variables # w return the list of all unique variables
 
+    def elim_empty_vars(self):
+        '''
+        take the following polynomial:
+            [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {}]]
+        Specifically, notice how the final term, [12, {}] has an empty variable dictionary
+        this causes issues when solving because it is evaluated to 0 and therefore, a potentially important constant is evaluated as 0
+        We shall fix this by replacing the empty dictionary with a filled dictionary of degree 0
+        '''
+        for term in self.terms: # we parse through each term of the polynomial
+            if len(term.vars) == 0: # if the variable dictionary is empty
+                for variable in self.list_unique_variables(): # then well go through all possible variables
+                    term.vars[variable] = 0 # and set the power to 0
+
+    def empty_vars(self):
+        '''
+        just how certain issues arise when we represent polynomials as:
+            
+        '''
+
     def plugin(self, vars):
+        self.elim_empty_vars()
         return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
     
     def sort(self): 
@@ -246,9 +266,5 @@ def compose(*polyss): # args will be of Polynomial class
         
     return Polynomial(simplify(polys[-1]))
 
-# a = Polynomial([[5, {'x':2}], [1,{}]])
 
-# b = Polynomial([[1, {'x': 2}], [1, {'x':1}], [-1, {'x':0}]])
 
-# composed = compose(a, b)
-# composed.print()
