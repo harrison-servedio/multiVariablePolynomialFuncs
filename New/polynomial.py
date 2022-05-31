@@ -43,7 +43,7 @@ class Polynomial: # the poynomial class
         [<term.term object at 0x0000013551D8E100>, <term.term object at 0x0000013551D8EB50>]
     where each of these term objects is: [coef, {var:exponent}]
     So, we can represent, for example 5x^3 + 3x^2 - 4x + 12 as:
-        [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {'x':0}]]    
+        [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {}]]    
     '''
 
 
