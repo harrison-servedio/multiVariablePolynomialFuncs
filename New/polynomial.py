@@ -32,6 +32,7 @@ Issues:
 '''
 
 from copy import deepcopy
+from email.quoprimime import unquote
 from enum import unique 
 from term import term
 
@@ -127,12 +128,7 @@ class Polynomial: # the poynomial class
         '''
         self.elim_empty_vars() # we first make sure that there are no empty variables. see documentation for this specific funciton to udnerstadn why this step is important
         return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms]) # then we go through each term and each variable in the term, and simply perform arithmetic with the desired value
-    
-    def raise_to(self, exponent):
-        ''' 
-        this
-        '''
-
+  
     def sort(self): 
         # NOTE : might want to tweak this/degree of terms
         # otherwise, this simply sorts all of the terms by highest degree to lowest degree
@@ -189,6 +185,25 @@ def mult(p1, p2):
             terms.append(term([coef, v])) 
     
     return Polynomial(simplify(terms))
+
+def raise_to(polynomial, power):
+    '''
+    this function will raise a polynomial to a given power
+    '''
+
+    if power == 0: # we want to return 1
+        # however, rather than just returning 1 with an empty var list, I will return it with the variables of the original polynomial
+        uniques = polynomial.list_unique_variables() # generate all of the vairables from arg poly
+        p = Polynomial([[1, {}]]) # polynomial with 1 and empty vars
+        for var in uniques: # going through
+            p.terms[0].vars[var] = 0 # setting unique vars to power 0 
+        return p # will end up returning something like [[1, {'x':0, 'y':0}]]
+    
+    for i in range(power-1):
+        
+        
+
+
 
 def single_div(dividend1, divisor): #This is their leading terms
     dividend = deepcopy(dividend1)
