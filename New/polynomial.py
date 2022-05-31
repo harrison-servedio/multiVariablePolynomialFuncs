@@ -203,7 +203,7 @@ def compose(*polyss): # args will be of Polynomial class
     polys = [t.terms for t in list(reversed(polyss))] + [[]]
     
     for index, poly1 in enumerate(polys[:-1]):
-        Polynomial(simplify(polys[-1])).print()
+        Polynomial(simplify(polys[-1]))
         poly = Polynomial(poly1)
         for iterm, term in enumerate(polys[index]):
 
