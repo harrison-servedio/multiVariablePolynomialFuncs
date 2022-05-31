@@ -95,6 +95,10 @@ class Polynomial: # the poynomial class
 
         print(' '.join(outpolys)) # otherwise, print the string representation of the polynomial
     
+    def list_unique_variables(self):
+        # we will attempt to list out all unique variables used in the polynomial
+        pass
+
     def plugin(self, vars):
         return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
     
