@@ -186,10 +186,6 @@ def mult(p1, p2):
     
     return Polynomial(simplify(terms))
 
-     
-
-
-
 def single_div(dividend1, divisor): #This is their leading terms
     dividend = deepcopy(dividend1)
     # Divide coefs 
