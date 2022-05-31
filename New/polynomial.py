@@ -31,10 +31,20 @@ Issues:
 
 '''
 
-from copy import deepcopy
+from copy import deepcopy 
 from term import term
 
-class Polynomial:
+class Polynomial: # the poynomial class
+
+    '''
+    a polynomial in math is comprised of multiple zero or nonzero terms. 
+    in this case, our polynomial class will be a list of multiple term objects
+    that it, it will read as follows:
+
+    []
+    '''
+
+
     def __init__(self, terms_input):
         # term object is composed of operator, coef, vars, degree
         if terms_input:

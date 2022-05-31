@@ -24,6 +24,7 @@ print(b.plugin({'x': 3}))"""
 
 import polynomial as p
 a = p.Polynomial([[1, {'x':4}], [-1, {'x': 3}], [-5, {'x': 2}], [-3, {'x': 1}]])
+print(a.terms)
 
 b = p.Polynomial([[1, {'x': 2}], [-3, {'x': 1}]])
 
