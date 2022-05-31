@@ -32,33 +32,55 @@ Issues:
 '''
 
 from copy import deepcopy
+from email.quoprimime import unquote
+from enum import unique 
 from term import term
 
-class Polynomial:
-    def __init__(self, terms_input):
-        # term object is composed of operator, coef, vars, degree
-        if terms_input:
+class Polynomial: # the poynomial class
+
+    '''
+    a polynomial in math is comprised of multiple zero or nonzero terms. 
+    in this case, our polynomial class will be a list of multiple term objects
+    that it, it will be as follows:
+        [<term.term object at 0x0000013551D8E100>, <term.term object at 0x0000013551D8EB50>]
+    where each of these term objects is: [coef, {var:exponent}]
+    So, we can represent, for example 5x^3 + 3x^2 - 4x + 12 as:
+        [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {}]]    
+    '''
+
+
+    def __init__(self, terms_input): 
+        # the input will be a list of term objects composed of operator, coef, vars, degree
+        if terms_input: # if there is an input
             self.terms = [term(t) for t in terms_input] if type(terms_input[0]) == list else terms_input
             self.sort()
             self.degree = self.terms[0].degree
-        else:
-            self.terms = []
-            self.degree = 0
+        else: # if false
+            self.terms = [term([0,{}])] # value of the polynomial is set to 0
+            self.degree = 0 # the degree is set to 0  as well
         
 
-    def simplify(self):
+    def simplify(self): # we can simplify the terms using the simplify function that is defined later
 
-        self.terms = simplify(self.terms)
+        self.terms = simplify(self.terms) # once, again, defined later. 
 
-    def print(self, return_=False):
-        self.sort()
-        outpolys = []
-        for t in self.terms: # prettifying terms
-            if t.degree:
-                polystr = f'{t.operator} {abs(t.coef) if abs(t.coef) != 1 and len(t.vars) else ""}'
+    def print(self, return_=False): 
+
+        '''
+        printing the polynomial nicely. for example, will display:
+            [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {'x':0}]]
+        in a more readable fashion as:
+            5x^3 + 3x^2 - 4x + 12
+        '''
+
+        self.sort() # we will sort the polynomial. this method is defined later in the class
+        outpolys = [] # a blank list for our inevitable output
+        for t in self.terms: # we will now go through and make each term into a readble string
+            if t.degree: 
+                polystr = f'{t.operator} {abs(t.coef) if abs(t.coef) != 1 and len(t.vars) else ""}' # displauuing the coefficient
             else:
-                polystr = f'{t.operator} {abs(t.coef)}'
-            for k, v in t.vars.items():
+                polystr = f'{t.operator} {abs(t.coef)}' # displaying coefficient
+            for k, v in t.vars.items(): # displauing variables
                 if v not in [1, 0]: 
                     polystr += f"{k}^{v}"
                 elif v == 0:
@@ -73,12 +95,43 @@ class Polynomial:
         if return_:
             return ' '.join(outpolys) # if return_ arg is true, returned instead of printed
 
-        print(' '.join(outpolys)) 
+        print(' '.join(outpolys)) # otherwise, print the string representation of the polynomial
     
-    def plugin(self, vars):
-        return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms])
-    
-    def sort(self): # might want to tweak this/degree of terms
+    def list_unique_variables(self):
+        # we will attempt to list out all unique variables used in the polynomial
+        unique_variables = [] # a list of all unique variables in the polynomial object
+        for term in self.terms: # we shal look through all of the terms in the polynomial
+            for variable in list(term.vars.keys()): # we look through potentially multiple variables
+                if variable not in unique_variables: # if the variable has not been seen before
+                    unique_variables.append(variable) # we add it to a list of all of unique variables
+        
+        return unique_variables # w return the list of all unique variables
+
+    def elim_empty_vars(self):
+        '''
+        take the following polynomial:
+            [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {}]]
+        Specifically, notice how the final term, [12, {}] has an empty variable dictionary
+        this causes issues when solving because it is evaluated to 0 and therefore, a potentially important constant is evaluated as 0
+        We shall fix this by replacing the empty dictionary with a filled dictionary of degree 0
+        '''
+        for term in self.terms: # we parse through each term of the polynomial
+            if len(term.vars) == 0: # if the variable dictionary is empty
+                for variable in self.list_unique_variables(): # then well go through all possible variables
+                    term.vars[variable] = 0 # and set the power to 0
+
+    def plugin(self, vars): 
+        '''
+        it is important to plug in values into a polynomial
+        expected input is a dict containing variable(s) and the value we want to be inputed
+        for example, input for f(x) would be {'x':value} and input for f(x,y) woudl be {'x':value, 'y':value}
+        '''
+        self.elim_empty_vars() # we first make sure that there are no empty variables. see documentation for this specific funciton to udnerstadn why this step is important
+        return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms]) # then we go through each term and each variable in the term, and simply perform arithmetic with the desired value
+  
+    def sort(self): 
+        # NOTE : might want to tweak this/degree of terms
+        # otherwise, this simply sorts all of the terms by highest degree to lowest degree
         self.terms = sorted(self.terms, key=lambda self: self.degree, reverse=True)
 
 def simplify(terms):
@@ -132,6 +185,25 @@ def mult(p1, p2):
             terms.append(term([coef, v])) 
     
     return Polynomial(simplify(terms))
+
+def raise_to(polynomial, power):
+    '''
+    this function will raise a polynomial to a given power
+    '''
+
+    if power == 0: # we want to return 1
+        # however, rather than just returning 1 with an empty var list, I will return it with the variables of the original polynomial
+        uniques = polynomial.list_unique_variables() # generate all of the vairables from arg poly
+        p = Polynomial([[1, {}]]) # polynomial with 1 and empty vars
+        for var in uniques: # going through
+            p.terms[0].vars[var] = 0 # setting unique vars to power 0 
+        return p # will end up returning something like [[1, {'x':0, 'y':0}]]
+    
+    for i in range(power-1):
+        
+        
+
+
 
 def single_div(dividend1, divisor): #This is their leading terms
     dividend = deepcopy(dividend1)
@@ -190,7 +262,12 @@ def expo(poly, power):
     return poly
 
 def compose(*polyss): # args will be of Polynomial class
-    polys = [t.terms for t in list(reversed(polyss))]
+    polys = [t.terms for t in list(reversed(polyss))] + [[]]
+    
+    for index, poly1 in enumerate(polys[:-1]):
+        Polynomial(simplify(polys[-1]))
+        poly = Polynomial(poly1)
+        for iterm, term in enumerate(polys[index]):
 
     active = polys.pop(0) # Active is what will be plugged into the next term
     
@@ -207,9 +284,11 @@ def compose(*polyss): # args will be of Polynomial class
     return Polynomial(simplify(active))
     
 
-a = Polynomial([[5, {'x':2}], [1,{}]])
 
-b = Polynomial([[1, {'x': 2}], [1, {'x':1}], [-1, {}]])
+# a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
+# b = Polynomial([[1, {'x':1}]])
 
-composed = compose(a, b, a)
-composed.print()
+# composed = compose(b,a)
+# composed.print()
+
+
