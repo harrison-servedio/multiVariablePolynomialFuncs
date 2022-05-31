@@ -39,21 +39,23 @@ class Polynomial: # the poynomial class
     '''
     a polynomial in math is comprised of multiple zero or nonzero terms. 
     in this case, our polynomial class will be a list of multiple term objects
-    that it, it will read as follows:
-
-    []
+    that it, it will be as follows:
+        [<term.term object at 0x0000013551D8E100>, <term.term object at 0x0000013551D8EB50>]
+    where each of these term objects is: [coef, {var:exponent}]
+    So, we can represent, for example 5x^3 + 3x^2 - 4x + 12 as:
+        [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {'x':0}]]    
     '''
 
 
-    def __init__(self, terms_input):
-        # term object is composed of operator, coef, vars, degree
-        if terms_input:
+    def __init__(self, terms_input): 
+        # the input will be a list of term objects composed of operator, coef, vars, degree
+        if terms_input: # if there is an input
             self.terms = [term(t) for t in terms_input] if type(terms_input[0]) == list else terms_input
             self.sort()
             self.degree = self.terms[0].degree
-        else:
-            self.terms = []
-            self.degree = 0
+        else: # if false
+            self.terms = [term([0,{}])] # value of the polynomial is set to 0
+            self.degree = 0 # the degree is set to 0  as well
         
 
     def simplify(self):
