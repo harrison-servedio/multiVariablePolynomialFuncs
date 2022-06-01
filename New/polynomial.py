@@ -32,6 +32,7 @@ Issues:
 '''
 
 from copy import deepcopy
+from multiprocessing.dummy import Value
 from term import term
 
 class Polynomial: # the poynomial class
@@ -446,8 +447,20 @@ def definite_integral(polynomial, lbound, ubound):
 
     only for single variable functions
     '''
-    pass
+    if len(polynomial.list_vars()) == 1: # only single variable
 
+        var = polynomial.list_vars()[0] # the variable key
+        antiderivative = aderive(polynomial) # the antiderivate
+
+        ans = antiderivative.plugin({var:ubound}) - antiderivative.plugin({var:lbound}) # sln is upper - lower
+
+        return ans
+
+    else:
+        raise ValueError("Expected polynomial with one variable")
+
+
+ 
 def newton_rasphon(polynomial):
     '''
     TAKES: a polynomial
@@ -455,3 +468,5 @@ def newton_rasphon(polynomial):
     
     only for single variable functions. 
     '''
+
+
