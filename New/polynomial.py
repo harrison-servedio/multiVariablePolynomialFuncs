@@ -439,3 +439,19 @@ def tangent_line_equation(polynomial, point):
     else:
         raise ValueError("Expected polynomial with one variable")
 
+def definite_integral(polynomial, lbound, ubound):
+    '''
+    TAKES: a polynomial object, and two integers, the lower bound and upper bound
+    RETURNS: an integer representing the value of the derivative
+
+    only for single variable functions
+    '''
+    pass
+
+def newton_rasphon(polynomial):
+    '''
+    TAKES: a polynomial
+    RETURNS: a list of integers representing approximate solutions to the equation
+    
+    only for single variable functions. 
+    '''
