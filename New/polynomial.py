@@ -252,10 +252,10 @@ def expo(poly, power):
             p.terms[0].vars[var] = 0 # setting unique vars to power 0 
         return p # will end up returning something like [[1, {'x':0, 'y':0}]]
 
-    for i in range(power-1): # 
-        poly = mult(poly, poly)
+    for i in range(power-1): # we will exponent
+        poly = mult(poly, poly) # we multipluy
     
-    return poly
+    return poly # we rteeun raised polynomial
 
 def compose(*polyss): # args will be of Polynomial class
     polys = [t.terms for t in list(reversed(polyss))] # ordering the list of polynomials that we will compose
@@ -290,19 +290,19 @@ def riemann(poly, lbound, ubound, steps = 100000):
 
         sum = 0 # cumulative sum of trapezoids set at 0
 
-        var = list(poly.terms[0].vars.keys())[0]
-        increment = (ubound-lbound)/steps
+        var = list(poly.terms[0].vars.keys())[0] # we see the unique variable
+        increment = (ubound-lbound)/steps # we set the incremement
 
-        current_step = lbound
+        current_step = lbound # the starting step is the lower bound
         while current_step < ubound: # originally i made a for loop then changed to while bc increment cant be below 1
-            l_sln = poly.plugin({var: current_step})
-            u_sln = poly.plugin({var: current_step+increment})
+            l_sln = poly.plugin({var: current_step}) # the lower y value
+            u_sln = poly.plugin({var: current_step+increment}) # the upper y value
 
-            a = increment * (l_sln + u_sln)/2
-            sum += a
-            current_step += increment
+            a = increment * (l_sln + u_sln)/2 # the area of the trapezoid
+            sum += a # add the area to the sum
+            current_step += increment # we increment more
         
-        return sum
+        return sum # return the sum
 
 def derive(polynomial):
     '''
@@ -361,20 +361,5 @@ def aderive(polynomial, new=True):
     
 
 
-
-# a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
-# b = Polynomial([[1, {'x':1}]])
-
-# composed = compose(b,a)
-# composed.print()
-
-a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {'x':0}]])
-aderive(a)
-a.print()
-
-# b = Polynomial([[1, {'x':0}]])
-
-# composed = compose(a,b)
-# composed.print()
 
 
