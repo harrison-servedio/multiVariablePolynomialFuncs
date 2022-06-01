@@ -362,10 +362,10 @@ def aderive(polynomial, new=True):
 
 
 
-# a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
-# # b = Polynomial([[1, {'x':1}]])
+a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
+b = Polynomial([[1, {'x':1}]])
 
-# composed = compose(a,a)
-# composed.print()
+composed = compose(a,b)
+composed.print()
 
 
