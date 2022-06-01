@@ -32,10 +32,13 @@ Issues:
 '''
 
 from copy import deepcopy
-from multiprocessing.sharedctypes import Value
 from term import term
 
 class Polynomial: # the poynomial class
+
+    '''
+    Polynomial expected in the form: [[term], [term]] where term is [coef, {var:exponent}]
+    '''
 
     '''
     a polynomial in math is comprised of multiple zero or nonzero terms. 
@@ -48,7 +51,7 @@ class Polynomial: # the poynomial class
     '''
 
 
-    def __init__(self, terms_input): 
+    def __init__(self, terms_input=False): 
         # the input will be a list of term objects composed of operator, coef, vars, degree
         if terms_input: # if there is an input
             self.terms = [term(t) for t in terms_input] if type(terms_input[0]) == list else terms_input
@@ -67,8 +70,10 @@ class Polynomial: # the poynomial class
 
         self.terms = simplify(self.terms) # once, again, defined later. 
 
+    # Function to add term to self.terms
+    def add_term(self, term):
+        self.terms.append(term)
     def print(self, return_=False): 
-
         '''
         printing the polynomial nicely. for example, will display:
             [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {'x':0}]]
@@ -101,6 +106,10 @@ class Polynomial: # the poynomial class
         print(' '.join(outpolys)) # otherwise, print the string representation of the polynomial
     
     def list_vars(self):
+        '''
+        lists all unique vairbales present in Polynomial Object
+        '''        
+        
         # we will attempt to list out all unique variables used in the polynomial
         unique_variables = [] # a list of all unique variables in the polynomial object
         for term in self.terms: # we shal look through all of the terms in the polynomial
@@ -112,6 +121,9 @@ class Polynomial: # the poynomial class
 
     def elim_empty_vars(self):
         '''
+        TAKES: nothing
+        RETURNS: Nothing, modifies polynomial object
+
         take the following polynomial:
             [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {}]]
         Specifically, notice how the final term, [12, {}] has an empty variable dictionary
@@ -125,6 +137,9 @@ class Polynomial: # the poynomial class
 
     def plugin(self, vars): 
         '''
+        TAKES: VARIABLE OF FORM {'x':value} 
+        RETURNS: Integer
+
         it is important to plug in values into a polynomial
         expected input is a dict containing variable(s) and the value we want to be inputed
         for example, input for f(x) would be {'x':value} and input for f(x,y) woudl be {'x':value, 'y':value}
@@ -162,21 +177,44 @@ def simplify(terms):
     return terms
 
 def add(p1, p2):
-    return Polynomial(simplify(p1.terms + p2.terms))
+    '''
+    TAKES: Two Polynomial objects
+    RETURNS: One Polynomial object 
+    We will add two polynomials together
+    '''
+    if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
+        p2 = Polynomial([[p2,{}]])
+    if not isinstance(p1, Polynomial): # likewise, in case p1 is inteher
+        p1 = Polynomial([[p1,{}]])
+    return Polynomial(simplify(p1.terms + p2.terms)) 
 
 def sub(p1, p2):
-    negative = mult(p2, -1)
+    '''
+    TAKES: Two Polynomial objects
+    RETURNS: One Polynomial object 
+    We will subtract two polynomials. P2 is subtracted from P1
+    '''
+    if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
+        p2 = Polynomial([[p2,{}]])
+    if not isinstance(p1, Polynomial): # likewise, in case p1 is inteher
+        p1 = Polynomial([[p1,{}]])
+    negative = mult(p2, -1) 
     equation = p1.terms + negative.terms
     return Polynomial(simplify(equation))
 
 def mult(p1, p2):
-    terms = []
-    if not isinstance(p2, Polynomial):
+    '''
+    TAKES: Two polynomial objects or integers
+    RETURNS: One Polynomial Object
+    we will multiply two polynomials
+    '''
+    terms = [] # a blank holder list 
+    if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
         p2 = Polynomial([[p2,{}]])
-    if not isinstance(p1, Polynomial):
+    if not isinstance(p1, Polynomial): # likewise, in case p1 is inteher
         p1 = Polynomial([[p1,{}]])
-    for n in p1.terms:
-        for m in p2.terms:
+    for n in p1.terms: # we iterate through each term
+        for m in p2.terms: 
             coef = n.coef * m.coef
             # merging vars dictionaries => a^(b+c) = a^b * a^c
             v = dict(n.vars) # reclassed because otherwise refrence is changed
@@ -187,7 +225,7 @@ def mult(p1, p2):
                     v[key] = value
             terms.append(term([coef, v])) 
     
-    return Polynomial(simplify(terms))
+    return Polynomial(simplify(terms)) 
 
 def single_div(dividend1, divisor): #This is their leading terms
     dividend = deepcopy(dividend1)
@@ -203,6 +241,12 @@ def single_div(dividend1, divisor): #This is their leading terms
     return term([coef, dividend.vars])
 
 def div(dividend1, divisor1, printed=False):
+    '''
+    TAKES: Two Polynomial objects, bool printed
+    RETURNS: One Polynomial object 
+    We will devide two polynomials if printed is false. dividend1 is devided by divisor1
+    If printed is true it will return the polynomial as a string
+    '''
     dividend = dividend1.terms
     divisor = divisor1.terms
     answer = []
@@ -358,14 +402,54 @@ def aderive(polynomial, new=True):
     else: # if the variable has more than one variable
         raise ValueError("Expected single variable polynomial")
 
+def slope_at_point(polynomial, point):
+    '''
+    TAKES: a polynomial object and a integer value as point
+    RETURN: a numberical sloe
     
+    we will simply use the derive function to find the slope at a point
+    '''
+    
+    if len(polynomial.list_vars()) == 1: # only single variable functions
+
+        var = polynomial.list_vars()[0] # the specific variable. we can do this because we know for a fact there is only one variable present
+        derivative = derive(polynomial) # derivate of the polynomial argument
+        return derivative.plugin({var: point}) # we return the numeric value of the derivate at the point
+
+    else:
+        raise ValueError("Expected polynomial with one unique variable")
+
+def tangent_line_equation(polynomial, point):
+    '''
+    TAKES: a SINGLE VARIABLE polynomial object and an integer
+    RETURNS: a polynomial object of degree 1 that represents the polynomial 
+    
+    
+    '''
+    if len(polynomial.list_vars()) == 1:
+        var = polynomial.list_vars()[0] # the specific variable. we can do this because we know for a fact there is only one variable present
+        yval = polynomial.plugin({var:point}) # the y value of the function
+        slope = slope_at_point()
+
+
+    else:
+        raise ValueError("Expected polynomial with one variable")
 
 
 
-a = Polynomial([[5, {'x':3}], [-3, {'x':1}], [-2, {}]])
-b = Polynomial([[1, {'x':1}]])
 
-composed = compose(a,b)
-composed.print()
-
-
+# Function to multiply two polynomials
+def mult(poly1, poly2):
+    '''
+    TAKES: two polynomial objects
+    RETURNS: a polynomial object that is the product of the two input polynomials
+    '''
+    if len(poly1.list_vars()) == 1 and len(poly2.list_vars()) == 1: # only single variable functions
+        result = Polynomial([]) # initialize the result
+        for term1 in poly1.terms: # for each term in the first polynomial
+            for term2 in poly2.terms: # for each term in the second polynomial
+                result.terms.append(term1 * term2) # we add the product of the two terms to the result
+        result.simplify() # simplify the result
+        return result # return the result
+    else:
+        raise ValueError("Expected polynomial with one unique variable")
