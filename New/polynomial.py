@@ -50,7 +50,6 @@ class Polynomial: # the poynomial class
         [[5, {'x':3}], [3 {'x':2}], [-4 {'x':1}], [12, {}]]    
     '''
 
-
     def __init__(self, terms_input=False): 
         # the input will be a list of term objects composed of operator, coef, vars, degree
         if terms_input: # if there is an input
@@ -70,9 +69,9 @@ class Polynomial: # the poynomial class
 
         self.terms = simplify(self.terms) # once, again, defined later. 
 
-    # Function to add term to self.terms
     def add_term(self, term):
         self.terms.append(term)
+
     def print(self, return_=False): 
         '''
         printing the polynomial nicely. for example, will display:
