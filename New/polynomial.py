@@ -325,11 +325,16 @@ def aderive(polynomial):
     '''
     here we will take the antiderivate of the input polynomial
     As with the derive function, this is also pretty simple, becaue it is just a polynomial
-    Also, this will only work with one variable Polynomials
+    HOWEVER HOWEVER, THERE ARE STILL REALLY IMPORTANT CONSTRAINTS:
+        antiderivate of x^-1 is ln(x) but thats beyond the scope of this
+        only single variable functions
     Expected input is a polynomial object
     '''
 
-    if len(polynomial.lis)
+    if len(polynomial.list_vars()) == 1:
+
+        for term in polynomial.terms:
+            if 
 
 
 
