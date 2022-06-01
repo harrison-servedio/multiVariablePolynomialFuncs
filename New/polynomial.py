@@ -339,11 +339,12 @@ def aderive(polynomial):
 
         var = polynomial.list_vars()[0] # the specific variable. we can do this because we know for a fact there is only one variable present
 
-        for term in polynomial.terms(): # we iterate through each term
+        for term in polynomial.terms: # we iterate through each term
             if term.degree == -1: # no ln(x)
                 raise ValueError("Contains term with degree -1, expected polynomial with no degrees of -1") # ln(X) is supported. 
             else: # otherwise, if the term is valid
                 (term.vars)[var] += 1 # we increase the power by one
+                term.degree = sum(term.vars.values())
                 term.coef = term.coef / term.degree # we also fix the coefficient
 
         polynomial.simplify() 
@@ -362,8 +363,9 @@ def aderive(polynomial):
 # composed.print()
 
 a = Polynomial([[5, {'x':5}], [-3, {'x':1}], [-2, {'x':0}]])
-derive(a)
+aderive(a)
 a.print()
+
 # b = Polynomial([[1, {'x':0}]])
 
 # composed = compose(a,b)
