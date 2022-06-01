@@ -11,6 +11,10 @@ class term:
         self.operator = '-' if term[0] < 0 else '+' # the operator determined by sign of term. only really used for displaying
         self.coef = term[0] # the coefficient is the first element of the term list
         self.vars = term[-1] # the dictionary of vars is term.vars, therefore we can access specific vars or exponents by using term.vars.keys()[] or term.vars.values()[]
-        self.degree = sum(self.vars.values()) # the degree of on term is the sum of all exponents in a dictionary
+        # self.degree = sum(self.vars.values()) # the degree of on term is the sum of all exponents in a dictionary
     
+    @property 
+    def degree(self): # the degree of the term
+        return sum(self.vars.values()) 
+
 

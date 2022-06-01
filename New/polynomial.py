@@ -325,7 +325,7 @@ def derive(polynomial):
     else:
         raise ValueError('Expected polynomial with one variable')
 
-def aderive(polynomial):
+def aderive(polynomial, new=True):
     '''
     here we will take the antiderivate of the input polynomial
     As with the derive function, this is also pretty simple, becaue it is just a polynomial
@@ -344,7 +344,6 @@ def aderive(polynomial):
                 raise ValueError("Contains term with degree -1, expected polynomial with no degrees of -1") # ln(X) is supported. 
             else: # otherwise, if the term is valid
                 (term.vars)[var] += 1 # we increase the power by one
-                term.degree = sum(term.vars.values())
                 term.coef = term.coef / term.degree # we also fix the coefficient
 
         polynomial.simplify() 
