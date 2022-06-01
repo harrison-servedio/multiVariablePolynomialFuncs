@@ -429,8 +429,13 @@ def tangent_line_equation(polynomial, point):
     if len(polynomial.list_vars()) == 1:
         var = polynomial.list_vars()[0] # the specific variable. we can do this because we know for a fact there is only one variable present
         yval = polynomial.plugin({var:point}) # the y value of the function
-        slope = slope_at_point()
+        slope = slope_at_point(polynomial, point) # the slope
 
+        # we know that y - y1 = m(x-x1)
+        # which implies that y = mx -(x1m) + y1
+        equation = Polynomial([[slope, {var:1}], [(slope*(-1*point))+yval, {var:0}]])
+
+        return equation
 
     else:
         raise ValueError("Expected polynomial with one variable")
