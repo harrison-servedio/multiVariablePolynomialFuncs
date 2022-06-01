@@ -258,21 +258,21 @@ def expo(poly, power):
     return poly
 
 def compose(*polyss): # args will be of Polynomial class
-    polys = [t.terms for t in list(reversed(polyss))]
+    polys = [t.terms for t in list(reversed(polyss))] # ordering the list of polynomials that we will compose
 
     active = polys.pop(0) # Active is what will be plugged into the next term
     
-    for func in polys:
-        result = []
-        for t in func:
-            if t.vars:
-                result += mult(t.coef, expo(Polynomial(active), list(t.vars.values())[0])).terms
+    for func in polys: # we go through through each polynomial. func is a Polynomial object
+        result = [] # an empty result list 
+        for t in func: # for each term in the Polynomial Object
+            if t.vars: # if there is a variable
+                result += mult(t.coef, expo(Polynomial(active), list(t.vars.values())[0])).terms # we will add the correct polynomial
             else:
-                result.append(t)
+                result.append(t) # if no variable just append the term
 
-        active = result
+        active = result # we keep going 
 
-    return Polynomial(simplify(active))
+    return Polynomial(simplify(active)) # return
     
 def riemann(poly, lbound, ubound, steps = 100000):
     
@@ -311,18 +311,23 @@ def derive(polynomial):
     the constraint here is that it will only work for single variabled functions
     expected input is a Polynomial `
     '''
-    if len(polynomial.list_vars()) == 1:
-    
-        for term in polynomial.terms:
-            if term.degree != 0:
-                term.coef = term.coef * term.degree
-                (term.vars)[polynomial.list_vars()[0]] -= 1 
-            elif term.degree == 0:
-                term.coef = 0
-                term.vars = {polynomial.list_vars()[0]: 0}
 
-        polynomial.simplify()
-    else:
+    tpoly = polynomial # we dont want to modfy the original polynomial argument, so we'll use a temporary and return it
+
+    if len(tpoly.list_vars()) == 1: # only single variable functions
+    
+        for term in tpoly.terms: # for each term in the polynomial
+            if term.degree != 0: # if the degree is a nonzero numnber
+                term.coef = term.coef * term.degree # we multiply the coef by the degree
+                (term.vars)[tpoly.list_vars()[0]] -= 1  # and we decrease the degree by 1
+            elif term.degree == 0: # if the degree is 0
+                term.coef = 0 # the coefficient becomes 0
+                term.vars = {tpoly.list_vars()[0]: 0} # rather than subtracting 1, we keep it at 0
+
+        tpoly.simplify() # we simplify the polynomial
+        return tpoly
+
+    else: # otherwise, if the polynomial has more than one variable
         raise ValueError('Expected polynomial with one variable')
 
 def aderive(polynomial, new=True):
@@ -334,21 +339,23 @@ def aderive(polynomial, new=True):
         only single variable functions
     Expected input is a polynomial object
     '''
+    tpoly = polynomial # we dont want to modfy the original polynomial argument, so we'll use a temporary and return it
 
-    if len(polynomial.list_vars()) == 1: # only works with a single variable polynomial
+    if len(tpoly.list_vars()) == 1: # only works with a single variable polynomial
 
-        var = polynomial.list_vars()[0] # the specific variable. we can do this because we know for a fact there is only one variable present
+        var = tpoly.list_vars()[0] # the specific variable. we can do this because we know for a fact there is only one variable present
 
-        for term in polynomial.terms: # we iterate through each term
+        for term in tpoly.terms: # we iterate through each term
             if term.degree == -1: # no ln(x)
                 raise ValueError("Contains term with degree -1, expected polynomial with no degrees of -1") # ln(X) is supported. 
             else: # otherwise, if the term is valid
                 (term.vars)[var] += 1 # we increase the power by one
                 term.coef = term.coef / term.degree # we also fix the coefficient
 
-        polynomial.simplify() 
-    
-    else:
+        tpoly.simplify() # simplify the polynomial
+        return tpoly
+
+    else: # if the variable has more than one variable
         raise ValueError("Expected single variable polynomial")
 
     
