@@ -32,6 +32,7 @@ Issues:
 '''
 
 from copy import deepcopy
+from multiprocessing.sharedctypes import Value
 from term import term
 
 class Polynomial: # the poynomial class
@@ -334,8 +335,23 @@ def aderive(polynomial):
     Expected input is a polynomial object
     '''
 
-    # if len(polynomial.lis)
-    pass
+    if len(polynomial.list_vars()) == 1: # only works with a single variable polynomial
+
+        var = polynomial.list_vars()[0] # the specific variable. we can do this because we know for a fact there is only one variable present
+
+        for term in polynomial.terms(): # we iterate through each term
+            if term.degree == -1: # no ln(x)
+                raise ValueError("Contains term with degree -1, expected polynomial with no degrees of -1") # ln(X) is supported. 
+            else: # otherwise, if the term is valid
+                (term.vars)[var] += 1 # we increase the power by one
+                term.coef = term.coef / term.degree # we also fix the coefficient
+
+        polynomial.simplify() 
+    
+    else:
+        raise ValueError("Expected single variable polynomial")
+
+    
 
 
 
