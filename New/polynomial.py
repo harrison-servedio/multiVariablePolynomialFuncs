@@ -440,21 +440,3 @@ def tangent_line_equation(polynomial, point):
     else:
         raise ValueError("Expected polynomial with one variable")
 
-
-
-
-# Function to multiply two polynomials
-def mult(poly1, poly2):
-    '''
-    TAKES: two polynomial objects
-    RETURNS: a polynomial object that is the product of the two input polynomials
-    '''
-    if len(poly1.list_vars()) == 1 and len(poly2.list_vars()) == 1: # only single variable functions
-        result = Polynomial([]) # initialize the result
-        for term1 in poly1.terms: # for each term in the first polynomial
-            for term2 in poly2.terms: # for each term in the second polynomial
-                result.terms.append(term1 * term2) # we add the product of the two terms to the result
-        result.simplify() # simplify the result
-        return result # return the result
-    else:
-        raise ValueError("Expected polynomial with one unique variable")
