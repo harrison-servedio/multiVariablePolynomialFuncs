@@ -32,6 +32,7 @@ Issues:
 '''
 
 from copy import deepcopy
+from errno import EPIPE
 from multiprocessing.dummy import Value
 from term import term
 
@@ -459,10 +460,20 @@ def definite_integral(polynomial, lbound, ubound):
     else:
         raise ValueError("Expected polynomial with one variable")
  
-def newton_rasphon(polynomial):
+def newton_rasphon(polynomial, init_guess = 5, epsilon = 0.00003, ):
     '''
     TAKES: a polynomial
     RETURNS: a list of integers representing approximate solutions to the equation
     
     only for single variable functions. 
     '''
+
+    if len(polynomial.list_vars()) == 1: # only single variable functinos
+        guess = init_guess
+        derivative = derive(polynomial)
+        yval = polynomial.plugin(guess)
+        while abs(yval) > epsilon:
+            guess = guess 
+            pass
+
+        return guess
