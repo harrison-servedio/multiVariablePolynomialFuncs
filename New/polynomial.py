@@ -458,7 +458,7 @@ def definite_integral(polynomial, lbound, ubound):
     else:
         raise ValueError("Expected polynomial with one variable")
  
-def newton_rasphon(polynomial, init_guess = 5, epsilon = 0.3):
+def newton_rasphon(poly, init_guess = 5, epsilon = 0.3):
     '''
     TAKES: a polynomial
     RETURNS: a list of integers representing approximate solutions to the equation
@@ -467,17 +467,19 @@ def newton_rasphon(polynomial, init_guess = 5, epsilon = 0.3):
     UNFINISHED UNFINISHED UNFINISHED
     '''
 
-    if len(polynomial.list_vars()) == 1: # only single variable functinos
+    if len(poly.list_vars()) == 1: # only single variable functinos
         guess = init_guess
-        print(guess)
-        yval = polynomial.plugin({polynomial.list_vars()[0]:guess})
-        print(yval)
+        var = poly.list_vars()[0]
+        print(var)
+        yval = poly.plugin({var:guess})
         while abs(yval) > epsilon:
-            guess = guess - (yval / slope_at_point(polynomial, guess))
-            yval = polynomial.plugin(guess)
-            pass
-
+            slope = slope_at_point(poly, guess)  
+            # print(f"guess: {guess}, yvalue: {yval}, slope {slope}")
+            guess = guess - (yval / slope)
+            
+            
         return guess
 
-a = Polynomial([[1, {'x':2}]])
+a = Polynomial([[1, {'x':2}], [-1, {'x':0}]])
+print(a.plugin({'x':2.6}))
 print(newton_rasphon(a))
