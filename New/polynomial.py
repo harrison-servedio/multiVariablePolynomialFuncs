@@ -32,8 +32,6 @@ Issues:
 '''
 
 from copy import deepcopy
-from errno import EPIPE
-from multiprocessing.dummy import Value
 from term import term
 
 class Polynomial: # the poynomial class
@@ -460,7 +458,7 @@ def definite_integral(polynomial, lbound, ubound):
     else:
         raise ValueError("Expected polynomial with one variable")
  
-def newton_rasphon(polynomial, init_guess = 5, epsilon = 0.00003, ):
+def newton_rasphon(polynomial, init_guess = 5, epsilon = 0.3):
     '''
     TAKES: a polynomial
     RETURNS: a list of integers representing approximate solutions to the equation
@@ -471,10 +469,15 @@ def newton_rasphon(polynomial, init_guess = 5, epsilon = 0.00003, ):
 
     if len(polynomial.list_vars()) == 1: # only single variable functinos
         guess = init_guess
-        derivative = derive(polynomial)
-        yval = polynomial.plugin(guess)
+        print(guess)
+        yval = polynomial.plugin({polynomial.list_vars()[0]:guess})
+        print(yval)
         while abs(yval) > epsilon:
-            guess = guess 
+            guess = guess - (yval / slope_at_point(polynomial, guess))
+            yval = polynomial.plugin(guess)
             pass
 
         return guess
+
+a = Polynomial([[1, {'x':2}]])
+print(newton_rasphon(a))
