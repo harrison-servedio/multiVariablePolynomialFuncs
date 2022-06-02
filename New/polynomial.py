@@ -458,8 +458,6 @@ def definite_integral(polynomial, lbound, ubound):
 
     else:
         raise ValueError("Expected polynomial with one variable")
-
-
  
 def newton_rasphon(polynomial):
     '''
@@ -470,3 +468,6 @@ def newton_rasphon(polynomial):
     '''
 
 
+a = Polynomial([[5, {'x':3}]])
+
+print(definite_integral(a, -3, 4))
