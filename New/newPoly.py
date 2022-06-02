@@ -3,8 +3,10 @@ class polynomial:
         '''
         coefs is a list of coeficients where the list position equals 
         '''
+        
+        self.coefs = coefs
+        self.delete_zeros()
         self.degree = len(coefs) - 1
-        self.coefs = [int(i) for i in ' '.join([str(i) for i in coefs]).lstrip('0 ').split(' ')]
     # arithmetic operators for polynomials
     
     def __add__(self, other):
@@ -18,21 +20,15 @@ class polynomial:
             
             
     def __sub__(self, other):
-        if self.degree == other.degree:
-            return polynomial([self.coefs[i] - other.coefs[i] for i in range(self.degree + 1)])
-        else:
-            raise ValueError("Polynomials must have the same degree")
+        # add leading zeros to other to make it the same length as self
+        if len(self.coefs) > len(other.coefs):
+            for i in range(len(self.coefs) - len(other.coefs)):
+                other.coefs.insert(0, 0)
+        elif len(self.coefs) < len(other.coefs):
+            for i in range(len(other.coefs) - len(self.coefs)):
+                self.coefs.insert(0, 0)
+        return polynomial([self.coefs[i] - other.coefs[i] for i in range(len(self.coefs))])
     def __mul__(self, other):
-        print(self)
-        print(other)
-        """if self.degree != other.degree:
-            if self.degree < other.degree:
-                self.coefs = [0 for i in range(other.degree - other.degree)] + self.coefs
-            else:
-                other.coefs = [0 for i in range(self.degree - other.degree)] + other.coefs"""
-        print(self)
-        print(other)
-
         result = [0 for i in range(len(self.coefs) + len(other.coefs) - 1)]
         print(result)
         for i in range(len(self.coefs)):
@@ -50,17 +46,36 @@ class polynomial:
         return str(self.coefs)
     def __eq__(self, other):
         return self.coefs == other.coefs
-    # function to divide two polynomials with polynomial long division algorithm
-    def __truediv__(self, other):
+    def __ne__(self, other):
+        return not self == other
+    # function to divide a polynomial by a constant
+    def __truediv__(self, remainder):
+        result = []
+        while remainder.degree < self.degree:
+            result.append(self.coefs[0] / remainder.coefs[0])
+            remainder = remainder - self * polynomial([result[-1]])
+
+        return polynomial(result), remainder, self
+
+    # function to find the remainder of two polynomials with polynomial long division algorithm
+    def __mod__(self, other):
         if self.degree < other.degree:
-            return polynomial([0])
+            return self
         else:
-            quotient = polynomial([0])
             remainder = self
             while remainder.degree >= other.degree:
-                quotient.coefs.insert(0, remainder.coefs[0]/other.coefs[0])
-                remainder = remainder - other * quotient
-            return quotient
+                remainder = remainder - other * (remainder / other)
+            return remainder
+    
+    def plugin(self, x):
+        return sum([self.coefs[i] * x**i for i in range(len(self.coefs))])
+    
+    # function to delete the leading zeros in the polynomial
+    def delete_zeros(self):
+        if self.coefs != []:
+            while self.coefs[0] == 0:
+                self.coefs.pop(0)
+                self.degree -= 1
     
 
 # test cases for poly class
@@ -69,4 +84,4 @@ p2 = polynomial([1, 1, 2, 0])
 p3 = polynomial([1, 2, 3, 4])
 p4 = polynomial([1, 2, 3, 4])
 
-print(p1 ** 3)
+print(p2/p1)
