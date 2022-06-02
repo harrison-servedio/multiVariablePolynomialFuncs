@@ -65,7 +65,51 @@ class Polynomial: # the poynomial class
     # Prints the polynomial when the class is requested as a string
     def __str__(self) -> str:
         return self.print(return_=True)
+    def __add__(self, other):
+        '''
+    TAKES: Two Polynomial objects
+    RETURNS: One Polynomial object 
+    We will add two polynomials together
+    '''
+        if not isinstance(other, Polynomial): # just in case p2 is integer, make it Polynomial Object
+            other = Polynomial([[other,{}]])
+        return Polynomial(simplify(self.terms + other.terms)) 
 
+    def __sub__(self, p2):
+        '''
+        TAKES: Two Polynomial objects
+        RETURNS: One Polynomial object 
+        We will subtract two polynomials. P2 is subtracted from P1
+        '''
+        if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
+            p2 = Polynomial([[p2,{}]])
+        negative = p2 * -1 
+        return negative + self
+
+    def __mul__(self, p2):
+        '''
+        TAKES: Two polynomial objects or integers
+        RETURNS: One Polynomial Object
+        we will multiply two polynomials
+        '''
+        p1 = self
+        terms = [] # a blank holder list 
+        if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
+            p2 = Polynomial([[p2,{}]])
+        for n in p1.terms: # we iterate through each term
+            for m in p2.terms: 
+                coef = n.coef * m.coef
+                # merging vars dictionaries => a^(b+c) = a^b * a^c
+                v = dict(n.vars) # reclassed because otherwise refrence is changed
+                for key, value in m.vars.items():
+                    if key in v.keys():
+                        v[key] += value
+                    else:
+                        v[key] = value
+                terms.append(term([coef, v])) 
+    
+        return Polynomial(simplify(terms)) 
+    
     def simplify(self): # we can simplify the terms using the simplify function that is defined later
 
         self.terms = simplify(self.terms) # once, again, defined later. 
@@ -176,56 +220,6 @@ def simplify(terms):
             
     return terms
 
-def add(p1, p2):
-    '''
-    TAKES: Two Polynomial objects
-    RETURNS: One Polynomial object 
-    We will add two polynomials together
-    '''
-    if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
-        p2 = Polynomial([[p2,{}]])
-    if not isinstance(p1, Polynomial): # likewise, in case p1 is inteher
-        p1 = Polynomial([[p1,{}]])
-    return Polynomial(simplify(p1.terms + p2.terms)) 
-
-def sub(p1, p2):
-    '''
-    TAKES: Two Polynomial objects
-    RETURNS: One Polynomial object 
-    We will subtract two polynomials. P2 is subtracted from P1
-    '''
-    if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
-        p2 = Polynomial([[p2,{}]])
-    if not isinstance(p1, Polynomial): # likewise, in case p1 is inteher
-        p1 = Polynomial([[p1,{}]])
-    negative = mult(p2, -1) 
-    equation = p1.terms + negative.terms
-    return Polynomial(simplify(equation))
-
-def mult(p1, p2):
-    '''
-    TAKES: Two polynomial objects or integers
-    RETURNS: One Polynomial Object
-    we will multiply two polynomials
-    '''
-    terms = [] # a blank holder list 
-    if not isinstance(p2, Polynomial): # just in case p2 is integer, make it Polynomial Object
-        p2 = Polynomial([[p2,{}]])
-    if not isinstance(p1, Polynomial): # likewise, in case p1 is inteher
-        p1 = Polynomial([[p1,{}]])
-    for n in p1.terms: # we iterate through each term
-        for m in p2.terms: 
-            coef = n.coef * m.coef
-            # merging vars dictionaries => a^(b+c) = a^b * a^c
-            v = dict(n.vars) # reclassed because otherwise refrence is changed
-            for key, value in m.vars.items():
-                if key in v.keys():
-                    v[key] += value
-                else:
-                    v[key] = value
-            terms.append(term([coef, v])) 
-    
-    return Polynomial(simplify(terms)) 
 
 def single_div(dividend1, divisor): #This is their leading terms
     dividend = deepcopy(dividend1)
@@ -438,18 +432,7 @@ def tangent_line_equation(polynomial, point):
 
 
 
-# Function to multiply two polynomials
-def mult(poly1, poly2):
-    '''
-    TAKES: two polynomial objects
-    RETURNS: a polynomial object that is the product of the two input polynomials
-    '''
-    if len(poly1.list_vars()) == 1 and len(poly2.list_vars()) == 1: # only single variable functions
-        result = Polynomial([]) # initialize the result
-        for term1 in poly1.terms: # for each term in the first polynomial
-            for term2 in poly2.terms: # for each term in the second polynomial
-                result.terms.append(term1 * term2) # we add the product of the two terms to the result
-        result.simplify() # simplify the result
-        return result # return the result
-    else:
-        raise ValueError("Expected polynomial with one unique variable")
+
+
+a = Polynomial([[1, {'x': 2}], [-3, {'x': 1}]])
+print(a * 1 + 1)
