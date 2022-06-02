@@ -466,8 +466,3 @@ def newton_rasphon(polynomial):
     
     only for single variable functions. 
     '''
-
-
-a = Polynomial([[5, {'x':3}]])
-
-print(definite_integral(a, -3, 4))
