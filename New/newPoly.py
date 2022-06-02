@@ -4,7 +4,7 @@ class polynomial:
         coefs is a list of coeficients where the list position equals 
         '''
         self.degree = len(coefs) - 1
-        self.coefs = ''.join(coefs).lstrip('0').split('')
+        self.coefs = [int(i) for i in ' '.join([str(i) for i in coefs]).lstrip('0 ').split(' ')]
     # arithmetic operators for polynomials
     
     def __add__(self, other):
@@ -23,12 +23,18 @@ class polynomial:
         else:
             raise ValueError("Polynomials must have the same degree")
     def __mul__(self, other):
-        if self.degree != other.degree:
+        print(self)
+        print(other)
+        """if self.degree != other.degree:
             if self.degree < other.degree:
                 self.coefs = [0 for i in range(other.degree - other.degree)] + self.coefs
             else:
-                other.coefs = [0 for i in range(self.degree - other.degree)] + other.coefs
-        result = [0 for i in range(len(self.coefs) + len(other.coefs) + 1)]
+                other.coefs = [0 for i in range(self.degree - other.degree)] + other.coefs"""
+        print(self)
+        print(other)
+
+        result = [0 for i in range(len(self.coefs) + len(other.coefs) - 1)]
+        print(result)
         for i in range(len(self.coefs)):
             for j in range(len(other.coefs)):
                 result[i+j] += self.coefs[i] * other.coefs[j]
@@ -58,9 +64,9 @@ class polynomial:
     
 
 # test cases for poly class
-p1 = polynomial([2, 0])
+p1 = polynomial([3, 2, 0])
 p2 = polynomial([1, 1, 2, 0])
 p3 = polynomial([1, 2, 3, 4])
 p4 = polynomial([1, 2, 3, 4])
 
-print(p2 ** 3)
+print(p1 ** 3)
