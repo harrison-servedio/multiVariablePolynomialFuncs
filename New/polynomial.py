@@ -466,6 +466,7 @@ def newton_rasphon(polynomial, init_guess = 5, epsilon = 0.00003, ):
     RETURNS: a list of integers representing approximate solutions to the equation
     
     only for single variable functions. 
+    UNFINISHED UNFINISHED UNFINISHED
     '''
 
     if len(polynomial.list_vars()) == 1: # only single variable functinos
