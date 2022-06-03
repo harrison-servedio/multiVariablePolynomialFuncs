@@ -31,7 +31,7 @@ Issues:
 
 '''
 
-from copy import deepcopy
+import copy
 from term import term
 
 class Polynomial: # the poynomial class
@@ -134,7 +134,7 @@ class Polynomial: # the poynomial class
                 for variable in self.list_vars(): # then well go through all possible variables
                     term.vars[variable] = 0 # and set the power to 0
 
-    def plugin(self, vars): 
+    def plugin(self, vals): 
         '''
         TAKES: VARIABLE OF FORM {'x':value} 
         RETURNS: Integer
@@ -144,7 +144,7 @@ class Polynomial: # the poynomial class
         for example, input for f(x) would be {'x':value} and input for f(x,y) woudl be {'x':value, 'y':value}
         '''
         self.elim_empty_vars() # we first make sure that there are no empty variables. see documentation for this specific funciton to udnerstadn why this step is important
-        return sum([t.coef*sum([vars[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms]) # then we go through each term and each variable in the term, and simply perform arithmetic with the desired value
+        return sum([t.coef*sum([vals[a]**t.vars[a] for a in t.vars.keys()]) for t in self.terms]) # then we go through each term and each variable in the term, and simply perform arithmetic with the desired value
   
     def sort(self): 
         # NOTE : might want to tweak this/degree of terms
@@ -355,8 +355,8 @@ def derive(polynomial):
     expected input is a Polynomial `
     '''
 
-    tpoly = polynomial # we dont want to modfy the original polynomial argument, so we'll use a temporary and return it
-
+    tpoly = copy.deepcopy(polynomial) # we dont want to modfy the original polynomial argument, so we'll use a temporary and return it
+    
     if len(tpoly.list_vars()) == 1: # only single variable functions
     
         for term in tpoly.terms: # for each term in the polynomial
@@ -382,7 +382,7 @@ def aderive(polynomial, new=True):
         only single variable functions
     Expected input is a polynomial object
     '''
-    tpoly = polynomial # we dont want to modfy the original polynomial argument, so we'll use a temporary and return it
+    tpoly = copy.deepcopy(polynomial) # we dont want to modfy the original polynomial argument, so we'll use a temporary and return it
 
     if len(tpoly.list_vars()) == 1: # only works with a single variable polynomial
 
@@ -458,7 +458,7 @@ def definite_integral(polynomial, lbound, ubound):
     else:
         raise ValueError("Expected polynomial with one variable")
  
-def newton_rasphon(poly, init_guess = 5, epsilon = 0.3):
+def newton_rasphon(poly, init_guess = 5, epsilon = 0.000003):
     '''
     TAKES: a polynomial
     RETURNS: a list of integers representing approximate solutions to the equation
@@ -470,16 +470,13 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.3):
     if len(poly.list_vars()) == 1: # only single variable functinos
         guess = init_guess
         var = poly.list_vars()[0]
-        print(var)
         yval = poly.plugin({var:guess})
         while abs(yval) > epsilon:
             slope = slope_at_point(poly, guess)  
-            # print(f"guess: {guess}, yvalue: {yval}, slope {slope}")
             guess = guess - (yval / slope)
-            
-            
+            yval = poly.plugin({var:guess})
+
         return guess
 
 a = Polynomial([[1, {'x':2}], [-1, {'x':0}]])
-print(a.plugin({'x':2.6}))
 print(newton_rasphon(a))
