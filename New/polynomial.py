@@ -517,3 +517,7 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.003):
             
 
         return list_of_ans # returning the list
+
+a = Polynomial([[1, {'x':2}], [-3, {'x':1}]])
+
+print(riemann(a, 0, 5))
