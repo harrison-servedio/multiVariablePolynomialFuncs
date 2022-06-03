@@ -6,5 +6,22 @@
 
 # # (array([0.01923077, 0.09615385, 0.33653846]), array([0.]))
 
-for i in range(0):
-    print(i)
+
+# def recursive_test(integer):
+#     l = []
+#     if integer == 2:
+#         l.append('done')
+#     else:
+#         l.append(integer)
+#         l.extend(recursive_test(integer - 1))
+#     return l
+
+# print(recursive_test(10))
+
+
+
+m = 5
+n = m
+
+n += 1
+print(m)
