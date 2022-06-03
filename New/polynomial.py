@@ -461,30 +461,8 @@ def definite_integral(polynomial, lbound, ubound):
 
     else:
         raise ValueError("Expected polynomial with one variable")
- 
-# def newton_rasphon(poly, init_guess = 5, epsilon = 0.000003):
-#     '''
-#     TAKES: a polynomial
-#     RETURNS: a list of integers representing approximate solutions to the equation
-    
-#     only for single variable functions. 
-#     UNFINISHED UNFINISHED UNFINISHED
-#     '''
 
-#     if len(poly.list_vars()) == 1: # only single variable functinos
-
-
-#         guess = init_guess
-#         var = poly.list_vars()[0]
-#         yval = poly.plugin({var:guess})
-#         while abs(yval) > epsilon:
-#             slope = slope_at_point(poly, guess)  
-#             guess = guess - (yval / slope)
-#             yval = poly.plugin({var:guess})
-
-#         return guess
-
-def newton_rasphon(poly, init_guess = 5, epsilon = 0.000003):
+def newton_rasphon(poly, init_guess = 5, epsilon = 0.003):
     '''
     TAKES: a polynomial
     RETURNS: a list of integers representing approximate solutions to the equation
@@ -500,25 +478,32 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.000003):
         guess = init_guess # we set the init_guess arg to the vairbale guess
         var = poly.list_vars()[0] # the variable - we can do this bc we know there is only 1
         yval = poly.plugin({var:guess}) # the initial y value for our inital guess
+        iterations = 0 # coutning the iterations
         while abs(yval) > epsilon: # we will keep iterating through until the error rate has been reached
 
+            if iterations > 10000000: # for stationary pts - we have other methods below, but this is j incase they fail
+                return list_of_ans # 
+
             slope = slope_at_point(poly, guess)  # the slope of the line tangent at the guess
-            if abs(slope) < 0.000000001: # we want to make sure that we stop at stationary pts - one sign is derivate closing in on 0 
+            if abs(slope) < 0.0001: # we want to make sure that we stop at stationary pts - one sign is derivate closing in on 0 
                 return list_of_ans # we'll return all the slns we have so far
     
 
             old_guess = guess # the old guess is beign stored in old_guess
             guess = guess - (yval / slope) # and the new guess based on the old guess is stored in guess
-            if abs(old_guess-guess) < 0.00000001: # another sign of stationary point is small delta in xval without a solution
+            if abs(old_guess-guess) < 0.0001: # another sign of stationary point is small delta in xval without a solution
                 return list_of_ans # if we do reach this point, just return the list of ans we got so far
 
             yval = poly.plugin({var:guess}) # the yvalue of the new guess
+            iterations += 1
+            # print(f'{slope} and {abs(old_guess-guess)}')
 
         '''
         now that the while loop concluded, we only have one solution - however, there are obviously more
         we will solve for more solutions via recursion
         because we have a solution, we can develop a factor of the poly, and by dividing the poly by the factor, we get a new poly we can solve
         '''
+       
 
         factor = Polynomial([[1, {var:1}], [-guess, {var:0}]]) # the factor is simply (x - guess)
         next_poly = div(poly, factor)[0] # the new polynomial is the quotient - the [0] is there because div returns a list and the 0th element is the quotient
@@ -527,7 +512,7 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.000003):
             list_of_ans.append(guess) # we dont need recursion anymore, we r done
         else: # otherwise, 
             list_of_ans.append(guess) # well add the guess
-            list_of_ans.extend(next_poly) # and continue on recursively
+            list_of_ans.extend(newton_rasphon(next_poly)) # and continue on recursively
 
         return list_of_ans # returning the list
 
@@ -535,9 +520,10 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.000003):
 # print(newton_rasphon(a))
 
 
-a = Polynomial([[1, {'x':7}],[6, {'x':3}],[-4, {'x':2}], [-4, {'x':0}]])
+
+a = Polynomial([[1, {'x':7}],[-6, {'x':3}],[-4, {'x':2}], [4, {'x':0}]])
 b = Polynomial([[1, {'x':1}],[-1.05272, {'x':0}]])
 
-c = div(a, b)[0]
 
-print(a.degree)
+
+print(newton_rasphon(a))
