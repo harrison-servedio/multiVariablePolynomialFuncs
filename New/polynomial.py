@@ -481,7 +481,7 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.003):
         iterations = 0 # coutning the iterations
         while abs(yval) > epsilon: # we will keep iterating through until the error rate has been reached
 
-            if iterations > 10000000: # for stationary pts - we have other methods below, but this is j incase they fail
+            if iterations > 100000: # for stationary pts - we have other methods below, but this is j incase they fail
                 return list_of_ans # 
 
             slope = slope_at_point(poly, guess)  # the slope of the line tangent at the guess
@@ -495,6 +495,7 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.003):
                 return list_of_ans # if we do reach this point, just return the list of ans we got so far
 
             yval = poly.plugin({var:guess}) # the yvalue of the new guess
+
             iterations += 1
             # print(f'{slope} and {abs(old_guess-guess)}')
 
@@ -513,17 +514,6 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.003):
         else: # otherwise, 
             list_of_ans.append(guess) # well add the guess
             list_of_ans.extend(newton_rasphon(next_poly)) # and continue on recursively
+            
 
         return list_of_ans # returning the list
-
-# a = Polynomial([[1, {'x':2}], [-1, {'x':0}]])
-# print(newton_rasphon(a))
-
-
-
-a = Polynomial([[1, {'x':7}],[-6, {'x':3}],[-4, {'x':2}], [4, {'x':0}]])
-b = Polynomial([[1, {'x':1}],[-1.05272, {'x':0}]])
-
-
-
-print(newton_rasphon(a))
