@@ -433,6 +433,3 @@ def tangent_line_equation(polynomial, point):
 
 
 
-
-a = Polynomial([[1, {'x': 2}], [-3, {'x': 1}]])
-print(a * 1 + 1)

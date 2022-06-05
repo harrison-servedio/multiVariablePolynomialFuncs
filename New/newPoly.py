@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 class polynomial:
     def __init__(self, coefs):
         '''
@@ -5,8 +6,9 @@ class polynomial:
         '''
         
         self.coefs = coefs
-        self.delete_zeros()
         self.degree = len(coefs) - 1
+        self.delete_zeros()
+        
     # arithmetic operators for polynomials
     
     def __add__(self, other):
@@ -29,12 +31,11 @@ class polynomial:
                 self.coefs.insert(0, 0)
         return polynomial([self.coefs[i] - other.coefs[i] for i in range(len(self.coefs))])
     def __mul__(self, other):
-        result = [0 for i in range(len(self.coefs) + len(other.coefs) - 1)]
-        print(result)
+        result = [0 for i in range(len(self.coefs) + len(other.coefs))]
         for i in range(len(self.coefs)):
             for j in range(len(other.coefs)):
                 result[i+j] += self.coefs[i] * other.coefs[j]
-        return polynomial(result)
+        return polynomial(result[:-1])
     def __pow__(self, power):
         if power == 0:
             return polynomial([1])
@@ -49,26 +50,26 @@ class polynomial:
     def __ne__(self, other):
         return not self == other
     # function to divide a polynomial by a constant
-    def __truediv__(self, remainder):
+    def __truediv__(self, divisor):
         result = []
-        while remainder.degree < self.degree:
-            result.append(self.coefs[0] / remainder.coefs[0])
-            remainder = remainder - self * polynomial([result[-1]])
+        while 1:
+            result.append((self.coefs[0] / divisor.coefs[0], self.degree - divisor.degree))
+            subby = divisor  * polynomial([result[-1][0]] + [0] * result[-1][1])
+            self = self - subby
+            if self.degree < divisor.degree:
+                break
 
-        return polynomial(result), remainder, self
+        return polynomial([i[0] for i in result]), self, divisor
 
     # function to find the remainder of two polynomials with polynomial long division algorithm
-    def __mod__(self, other):
-        if self.degree < other.degree:
-            return self
-        else:
-            remainder = self
-            while remainder.degree >= other.degree:
-                remainder = remainder - other * (remainder / other)
-            return remainder
+    def __mod__(self, divisor):
+        return (self/divisor)[1:]
+    
+    def __floordiv__(self, divisor):
+        return (self/divisor)[0]
     
     def plugin(self, x):
-        return sum([self.coefs[i] * x**i for i in range(len(self.coefs))])
+        return sum([self.coefs[i] * x**(self.degree - i) for i in range(self.degree + 1)])
     
     # function to delete the leading zeros in the polynomial
     def delete_zeros(self):
@@ -76,12 +77,23 @@ class polynomial:
             while self.coefs[0] == 0:
                 self.coefs.pop(0)
                 self.degree -= 1
-    
+                if self.coefs == []:
+                    break
 
-# test cases for poly class
-p1 = polynomial([3, 2, 0])
-p2 = polynomial([1, 1, 2, 0])
-p3 = polynomial([1, 2, 3, 4])
-p4 = polynomial([1, 2, 3, 4])
+    # function to find the derivative of a polynomial
+    def derivative(self):
+        return polynomial([self.coefs[i] * (self.degree - i) for i in range(0, self.degree)])
 
-print(p2/p1)
+    # function to find the riemann sum of a polynomial
+    def riemann_sum(self, a, b, n):
+        return sum([self.plugin(a + i * (b - a) / n) for i in range(n)]) * abs(b - a) / n
+
+
+    # function to plot a polynomial
+    def plot(self, x_range):
+        x = [i for i in range(x_range[0], x_range[1])]
+        y = [self.plugin(i) for i in x]
+        plt.plot(x, y)
+        plt.show()
+p1 = polynomial([2, 1, 2, 3])
+p1.plot((-100000, 100000))
