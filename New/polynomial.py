@@ -462,11 +462,12 @@ def definite_integral(polynomial, lbound, ubound):
     else:
         raise ValueError("Expected polynomial with one variable")
 
-def newton_rasphon(poly, init_guess = 5, epsilon = 0.003):
+def newton_rasphon(poly, init_guess = 5, epsilon = 0.00003):
     '''
     TAKES: a polynomial
     RETURNS: a list of integers representing approximate solutions to the equation
     
+    attempts to find zeros of a polynomial
     only for single variable functions. 
     UNFINISHED UNFINISHED UNFINISHED
     '''
@@ -517,7 +518,3 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.003):
             
 
         return list_of_ans # returning the list
-
-a = Polynomial([[1, {'x':2}], [-3, {'x':1}]])
-
-print(riemann(a, 0, 5))
