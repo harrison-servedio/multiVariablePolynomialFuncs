@@ -321,7 +321,7 @@ def compose(*polyss): # args will be of Polynomial class
 
     return Polynomial(simplify(active)) # return
     
-def riemann(poly, lbound, ubound, steps = 100000):
+def trapezoid_riemann(poly, lbound, ubound, steps = 100000):
     
     '''
     this function will attempt to obtain a riemann sum to approximate the are under a curve
@@ -330,12 +330,12 @@ def riemann(poly, lbound, ubound, steps = 100000):
     the number of steps that the riemann sum will undergo will be given in the 'steps' argument, which defaults to 1 billion steps
 
     this riemann sum function will use trapezoidal approximation, and not right or left rectangles because i dont want to  
-    also this is only for single variable, 2d functions because i said so  
+    also this is only for f: x -> y maps because i said so  
     '''
 
     if len(poly.list_vars()) == 1: # ONLY SINGLE VARIABLE REIMANN SUM
 
-        sum = 0 # cumulative sum of trapezoids set at 0
+        cumsum = 0 # cumulative sum of trapezoids set at 0
 
         var = list(poly.terms[0].vars.keys())[0] # we see the unique variable
         increment = (ubound-lbound)/steps # we set the incremement
@@ -346,10 +346,74 @@ def riemann(poly, lbound, ubound, steps = 100000):
             u_sln = poly.plugin({var: current_step+increment}) # the upper y value
 
             a = increment * (l_sln + u_sln)/2 # the area of the trapezoid
-            sum += a # add the area to the sum
+            cumsum += a # add the area to the sum
             current_step += increment # we increment more
         
-        return sum # return the sum
+        return cumsum # return the sum
+
+def left_riemann(poly, lbound, ubound, steps=10000):
+
+    '''
+    left riemann sum to approximate area under a curve
+    consult trapezoid_riemann for more deets, this is the same but a left rectangle instead of a trapezoid
+    '''
+
+    if len(poly.list_vars()) == 1: # only functions defined on a single variable
+
+        cumsum = 0
+        var = list(poly.terms[0].vars.keys())[0]
+        increment = (ubound-lbound)/steps
+
+        current_step = lbound
+        while current_step < ubound:
+            l_sln = poly.plugin({var: current_step})
+            a = increment * l_sln
+            cumsum += a
+            current_step += increment
+        
+        return cumsum
+
+def right_riemann(poly, lbound, ubound, steps=100000):
+
+    '''
+    consult trapezoid_riemann for more information
+    '''
+
+    if len(poly.list_vars()) == 1: # only functions defined on a single variable
+
+        cumsum = 0
+        var = list(poly.terms[0].vars.keys())[0]
+        increment = (ubound-lbound)/steps
+
+        current_step = lbound
+        while current_step < ubound:
+            u_sln = poly.plugin({var: current_step+increment})
+            a = increment * u_sln
+            cumsum += a
+            current_step += increment
+        
+        return cumsum
+    
+def center_riemann(poly, lbound, ubound, steps=100000):
+
+    '''
+    consult trapezoid_riemann for more information
+    '''
+
+    if len(poly.list_vars()) == 1: # only functions defined on a single variable
+
+        cumsum = 0
+        var = list(poly.terms[0].vars.keys())[0]
+        increment = (ubound-lbound)/steps
+
+        current_step = lbound
+        while current_step < ubound:
+            c_sln = poly.plugin({var: current_step+(increment/2)})
+            a = increment * c_sln
+            cumsum += a
+            current_step += increment
+        
+        return cumsum
 
 def derive(polynomial):
     '''
@@ -462,7 +526,7 @@ def definite_integral(polynomial, lbound, ubound):
     else:
         raise ValueError("Expected polynomial with one variable")
 
-def newton_rasphon(poly, init_guess = 5, epsilon = 0.00003):
+def newton_raphson(poly, init_guess = 5, epsilon = 0.00003):
     '''
     TAKES: a polynomial
     RETURNS: a list of integers representing approximate solutions to the equation
@@ -514,7 +578,7 @@ def newton_rasphon(poly, init_guess = 5, epsilon = 0.00003):
             list_of_ans.append(guess) # we dont need recursion anymore, we r done
         else: # otherwise, 
             list_of_ans.append(guess) # well add the guess
-            list_of_ans.extend(newton_rasphon(next_poly)) # and continue on recursively
+            list_of_ans.extend(newton_raphson(next_poly)) # and continue on recursively
             
 
-        return list_of_ans # returning the list
+        return list_of_ans # returning the lists
